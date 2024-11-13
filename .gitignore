@@ -1,7 +1,5 @@
-*.sqlite3
 __pycache__
 .env
-static
 secret.txt
 key.py
 books_data.csv
