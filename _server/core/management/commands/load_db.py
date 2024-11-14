@@ -6,7 +6,9 @@ class Command(BaseCommand):
     help = "Load database with sample data"
     
     def handle(self, *args, **options):
-        # Genres
+        # create users
+        
+        # load tables
         self.__load_table(Genres, 'genres.csv')
         
     def __load_table(self, model, path):
