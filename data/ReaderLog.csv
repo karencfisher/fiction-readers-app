@@ -1,4 +1,4 @@
-user_id,book,status
+user_id,book_id,status
 1,6,COVER2COVER
 1,30,COVER2COVER
 2,30,COVER2COVER

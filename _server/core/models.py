@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 # Create your models here.
-class Books(models.Model):
+class Book(models.Model):
     id = models.BigAutoField(primary_key=True)
     year_published = models.IntegerField()
     title = models.CharField(max_length=100)
@@ -12,47 +12,56 @@ class Books(models.Model):
     info_link = models.CharField(max_length=100)
     average_rating = models.IntegerField(default=0)
     cover_link= models.CharField(max_length=100)
-    author = models.ForeignKey('Authors', on_delete=models.CASCADE, null=True)
-    publisher = models.ForeignKey('Publishers', on_delete=models.CASCADE, null=True)
-    genre = models.ForeignKey('Genres', on_delete=models.CASCADE, null=True)
-    reviews = models.ManyToManyField('Reviews', related_name='books')
+    author = models.ForeignKey('Author', on_delete=models.CASCADE, null=True)
+    publisher = models.ForeignKey('Publisher', on_delete=models.CASCADE, null=True)
+    genre = models.ForeignKey('Genre', on_delete=models.CASCADE, null=True)
     
+    def reviews(self):
+        return Review.objects.filter(book=self)
     
-class Authors(models.Model):
+class Author(models.Model):
     id = models.BigAutoField(primary_key=True)
     author_name= models.TextField()
     
     def books(self):
-        return Books.objects.filter(author=self)
+        return Book.objects.filter(author=self)
     
 
-class Publishers(models.Model):
+class Publisher(models.Model):
     id = models.BigAutoField(primary_key=True)
     publisher_name = models.TextField()
     
     def books(self):
-        return Books.objects.filter(publisher=self)
+        return Book.objects.filter(publisher=self)
     
     
-class Genres(models.Model):
+class Genre(models.Model):
     id = models.BigAutoField(primary_key=True)
     genre = models.TextField()
     
     def books(self):
-        return Books.objects.filter(genre=self)
+        return Book.objects.filter(genre=self)
     
     
-class Reviews(models.Model):
+class Review(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='review', null=True)
     review = models.TextField()
     rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     
     
-class ReaderLogs(models.Model):
+class ReaderLog(models.Model):
     id = models.BigAutoField(primary_key=True)
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE)
-    status = models.TextChoices('status', 'TOREAD READING DNF SKIMMED COVER2COVER')
-    book = models.ManyToManyField('Books', related_name='reader_logs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    STATUS_CHOICES = [
+        ('TOREAD', 'To Read'),
+        ('READING', 'Reading'),
+        ('DNF', 'Did Not Finish'),
+        ('SKIMMED', 'Skimmed'),
+        ('COVER2COVER', 'Cover to Cover'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True)
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='reader_log', null=True)
     
     

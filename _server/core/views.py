@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf  import settings
 from django.contrib.auth.decorators import login_required
-from .models import Books, Authors, Genres, Publishers
+from .models import Book, Author, Genre, Publisher
 
 # Load manifest when server launches
 MANIFEST = {}
@@ -32,21 +32,29 @@ def search(req):
         method = req.GET['method']
         query = req.GET['query']
         if method == 'author':
-            collection = Authors.objects.get(author_name=query)
+            collection = Author.objects.get(author_name=query)
         elif method == 'genre':
-            collection = Genres.objects.get(genre=query)
+            collection = Genre.objects.get(genre=query)
         elif method == 'publisher':
-            collection = Publishers.objects.get(publisher_name=query)
+            collection = Publisher.objects.get(publisher_name=query)
         elif method == 'title':
             pass
         elif method == 'synopsis':
             pass
         else:
             raise KeyError(f'No such query method: {query}')
-        return JsonResponse(model_to_dict(collection.books()))
-    except (Genres.DoesNotExist, 
-            Authors.DoesNotExist, 
-            Publishers.DoesNotExist):
+        
+        # Organize results, get books and reviews
+        shelf = []
+        for item in collection.books():
+            book = model_to_dict(item)
+            book['reviews'] = [model_to_dict(review) for review in item.reviews()]
+            shelf.append(book)
+        return JsonResponse({'data': shelf})
+    
+    except (Genre.DoesNotExist, 
+            Author.DoesNotExist, 
+            Publisher.DoesNotExist):
         return JsonResponse({'error': f"{method} '{query}' is not found"}, status=404)
     except Exception as err:
         traceback.print_tb(err.__traceback__)
