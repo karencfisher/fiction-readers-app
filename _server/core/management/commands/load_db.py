@@ -4,7 +4,6 @@ import os
 
 class Command(BaseCommand):
     help = "Load database with sample data"
-    base_path = '../data'
     
     def handle(self, *args, **options):
         # Genres
