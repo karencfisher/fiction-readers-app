@@ -1,0 +1,23 @@
+[
+    {
+        "username": "Harriet Klausner",
+        "email": "harriet@klausner.com",
+        "first_name": "Harriet",
+        "last_name": "Klausner",
+        "password": "password1"
+    },
+    {
+        "username": "A Customer",
+        "email": "a_customer@gmail.com",
+        "first_name": "Alfred",
+        "last_name": "Customer",
+        "password": "password2"
+    },
+    {
+        "username": "CoffeeGurl",
+        "email": "cg@CoffeeGurl.com",
+        "first_name": "Cathy",
+        "last_name": "Coffee",
+        "password": "password3"
+    }
+]
