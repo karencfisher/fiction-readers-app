@@ -23,24 +23,15 @@ class Author(models.Model):
     id = models.BigAutoField(primary_key=True)
     author_name= models.TextField()
     
-    def books(self):
-        return Book.objects.filter(author=self)
-    
 
 class Publisher(models.Model):
     id = models.BigAutoField(primary_key=True)
     publisher_name = models.TextField()
     
-    def books(self):
-        return Book.objects.filter(publisher=self)
-    
     
 class Genre(models.Model):
     id = models.BigAutoField(primary_key=True)
     genre = models.TextField()
-    
-    def books(self):
-        return Book.objects.filter(genre=self)
     
     
 class Review(models.Model):

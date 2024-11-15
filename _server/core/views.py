@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf  import settings
 from django.contrib.auth.decorators import login_required
-from .models import Book, Author, Genre, Publisher
+from .models import *
 
 # Load manifest when server launches
 MANIFEST = {}
@@ -26,37 +26,92 @@ def index(req):
     }
     return render(req, "core/index.html", context)
 
-# @login_required
-def search(req):
+def books_reader_logs(req):
+    ''' Search books for reader_logs (can be public) '''
+    try:
+        results = Book.objects.filter(reader_log__isnull=False)\
+            .distinct().values('id', 'title', 'cover_link')
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+    return JsonResponse({'data': list(results)})
+
+@login_required
+def books_search(req):
+    ''' Search books by criteria '''
     try:
         method = req.GET['method']
         query = req.GET['query']
         if method == 'author':
-            collection = Author.objects.get(author_name=query)
+            collection = Book.objects.filter(author__author_name=query)\
+                .values('id', 'title', 'cover_link')
         elif method == 'genre':
-            collection = Genre.objects.get(genre=query)
+            collection = Book.objects.filter(genre__genre=query)\
+                .values('id', 'title', 'cover_link')
         elif method == 'publisher':
-            collection = Publisher.objects.get(publisher_name=query)
+            collection = Book.objects.filter(publisher__publisher_name=query)\
+                .values('id', 'title', 'cover_link')
         elif method == 'title':
             pass
         elif method == 'synopsis':
             pass
         else:
             raise KeyError(f'No such query method: {query}')
-        
-        # Organize results, get books and reviews
-        shelf = []
-        for item in collection.books():
-            book = model_to_dict(item)
-            book['reviews'] = [model_to_dict(review) for review in item.reviews()]
-            shelf.append(book)
-        return JsonResponse({'data': shelf})
-    
-    except (Genre.DoesNotExist, 
-            Author.DoesNotExist, 
-            Publisher.DoesNotExist):
-        return JsonResponse({'error': f"{method} '{query}' is not found"}, status=404)
+        if not collection:
+            return JsonResponse({'error': f"No data found for '{method}: {query}'"}, status=404)
+        return JsonResponse({'data': list(collection)})
     except Exception as err:
         traceback.print_tb(err.__traceback__)
         print(err)
         return JsonResponse({'error': 'Invalid request'}, status=400)
+
+@login_required
+def book_id(req, id):
+    ''' Get complete book, including reviews '''
+    try:
+        book_obj = Book.objects.get(id=id)
+        book = model_to_dict(book_obj)
+        book['reviews'] = [model_to_dict(review) for review in book_obj.reviews()]
+        return JsonResponse(book)
+    except Book.DoesNotExist:
+        return JsonResponse({'error': f"Book with id '{id}' not found"}, status=404)
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+
+@login_required
+def review_id(req, id):
+    ''' Get review by id, including user name, author, and title '''
+    try:
+        review = Review.objects.filter(id=id).select_related('book__author', 'user').values(
+            'id', 
+            'user__username', 
+            'book__author__author_name', 
+            'book__title', 
+            'review', 
+            'rating'
+        )[0]
+        return JsonResponse(review)
+    except Review.DoesNotExist:
+        return JsonResponse({'error': f"Review with id '{id}' not found"}, status=404)
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+    
+@login_required
+def review_update(req):
+    ''' Update a new or edited review '''
+    pass
+
+@login_required
+def reader_log_id(req, user_id):
+    ''' Get reader log by user id '''
+    pass
+
+@login_required
+def reader_log_update(req):
+    ''' Update or create reader log entry '''
+    

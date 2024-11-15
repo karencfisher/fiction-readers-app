@@ -7,7 +7,7 @@ from django.http import JsonResponse
 def sign_up(req):
     if req.method == "POST":
         user = User.objects.create_user(
-            username=req.POST.get("email"),
+            username=req.POST.get("username"),
             password=req.POST.get("password"),
             email=req.POST.get("email"),
             first_name=req.POST.get("first_name"),
@@ -20,7 +20,7 @@ def sign_up(req):
 
 def sign_in(req):
     if req.method == "POST":
-        user = authenticate(req, username=req.POST.get("email"), password=req.POST.get("password"))
+        user = authenticate(req, username=req.POST.get("username"), password=req.POST.get("password"))
         if user is not None:
             login(req, user)
             return redirect("/")

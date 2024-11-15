@@ -12,8 +12,8 @@ class Command(BaseCommand):
     help = "Load database with sample data"
     
     def handle(self, *args, **options):
-        self.stdout.write("This command will reinitialize the database to the sample data.")
-        self.stdout.write("Any other data will be lost!")
+        self.stdout.write("This command will reinitialize the database with the sample data.")
+        self.stdout.write("Any other data will be lost! This is irreversible.")
         accept = input("Do you want to proceed? [Yes/No] ")
         if not accept.lower() in ['yes', 'y']:
             return

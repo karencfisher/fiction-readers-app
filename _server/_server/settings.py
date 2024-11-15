@@ -130,4 +130,5 @@ STATIC_URL = 'static/' if not DEBUG else "__UNUSED__/"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = "registration/sign_in/"
+LOGIN_URL = "/registration/sign_in/"
+
