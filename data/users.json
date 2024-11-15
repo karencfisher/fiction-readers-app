@@ -1,13 +1,13 @@
 [
     {
-        "username": "Harriet Klausner",
+        "username": "MsKlausner",
         "email": "harriet@klausner.com",
         "first_name": "Harriet",
         "last_name": "Klausner",
         "password": "password1"
     },
     {
-        "username": "A Customer",
+        "username": "ACustomer",
         "email": "a_customer@gmail.com",
         "first_name": "Alfred",
         "last_name": "Customer",
