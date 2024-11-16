@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.functions import Lower
 from django.contrib.auth.models import User
 
 
@@ -16,6 +17,13 @@ class Book(models.Model):
     publisher = models.ForeignKey('Publisher', on_delete=models.CASCADE, null=True)
     genre = models.ForeignKey('Genre', on_delete=models.CASCADE, null=True)
     
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'year_published', 'publisher'],
+                name='unique_edition_constraint')
+        ]
+    
     def reviews(self):
         return Review.objects.filter(book=self).values(
             'id',
@@ -24,20 +32,26 @@ class Book(models.Model):
             'review',
             'rating'
         )
+        
     
 class Author(models.Model):
     id = models.BigAutoField(primary_key=True)
-    author_name= models.TextField()
+    author_name= models.TextField(unique=True)
     
 
 class Publisher(models.Model):
     id = models.BigAutoField(primary_key=True)
-    publisher_name = models.TextField()
+    publisher_name = models.TextField(unique=True)
     
     
 class Genre(models.Model):
     id = models.BigAutoField(primary_key=True)
     genre = models.TextField()
+    
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(Lower('genre'), name='unique_genre_constraint')
+        ]
     
     
 class Review(models.Model):

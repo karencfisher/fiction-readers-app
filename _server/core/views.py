@@ -4,7 +4,8 @@ import traceback
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from django.shortcuts import render
-from django.conf  import settings
+from django.conf import settings
+from django.db.utils import IntegrityError
 from django.contrib.auth.decorators import login_required
 from .models import *
 
@@ -93,9 +94,27 @@ def book_id(req, id):
         return JsonResponse({'error': 'Server error'}, status=500)
     
 @login_required
-def book_update(req):
+def book_new(req):
     ''' Add a book by user '''
-    pass
+    try:
+        book_info = req.POST.dict()
+        
+        # Genre should be in existing list, but new author and publisher can be added
+        book_info['genre'] = Genre.objects.get(genre=book_info['genre'])
+        book_info['author'], _ = Author.objects.get_or_create(author_name=book_info['author'])
+        book_info['publisher'], _ = Publisher.objects.get_or_create(publisher_name=book_info['publisher]'])
+        new_book = Book.objects.create(**book_info)
+        new_book.save()
+        return JsonResponse({'success': 'Book added'}, status=201)
+    
+    except IntegrityError:
+        return JsonResponse({'error': f"Title '{book_info['title']} already exysts"}, status=400)
+    except Genre.DoesNotExist:
+        return JsonResponse({'error': f"Invalid genre '{book_info['genre']}"})
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
 
 @login_required
 def review_id(req, id):
@@ -119,8 +138,22 @@ def review_id(req, id):
     
 @login_required
 def review_update(req):
-    ''' Update a new or edited review '''
-    pass
+    ''' Create or update a review '''
+    try:
+        review_info = req.POST.dict()
+        review_info['user'] = User.objects.get(req.user)
+        review_info['book'] = Book.objects.get(review_info['book'])
+        new_review, created = Review.objects.update_or_create(**review_info)
+        new_review.save()
+        action = 'Review created' if created else 'Review updated'
+        return JsonResponse({'success': action})
+    
+    except Book.DoesNotExist:
+        return JsonResponse({'error': 'Book is not in database'})
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
 
 @login_required
 def reader_log_id(req, user_id):
@@ -146,5 +179,18 @@ def reader_log_id(req, user_id):
 @login_required
 def reader_log_update(req):
     ''' Update or create reader log entry '''
-    pass
-    
+    try:
+        log_info = req.POST.dict()
+        log_info['user'] = User.objects.get(req.user)
+        log_info['book'] = Book.objects.get(log_info['book'])
+        new_log, created = ReaderLog.objects.update_or_create(**log_info)
+        new_log.save()
+        action = 'Log entry created' if created else 'Log entry updated'
+        return JsonResponse({'sucess': action})
+        
+    except Book.DoesNotExist:
+        return JsonResponse({'error': 'Book is not in database'})    
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
