@@ -142,7 +142,7 @@ def review_update(req):
     try:
         review_info = req.POST.dict()
         review_info['user'] = User.objects.get(req.user)
-        review_info['book'] = Book.objects.get(review_info['book'])
+        review_info['book'] = Book.objects.get(id=review_info['book'])
         new_review, created = Review.objects.update_or_create(**review_info)
         new_review.save()
         action = 'Review created' if created else 'Review updated'
@@ -182,7 +182,7 @@ def reader_log_update(req):
     try:
         log_info = req.POST.dict()
         log_info['user'] = User.objects.get(req.user)
-        log_info['book'] = Book.objects.get(log_info['book'])
+        log_info['book'] = Book.objects.get(id=log_info['book'])
         new_log, created = ReaderLog.objects.update_or_create(**log_info)
         new_log.save()
         action = 'Log entry created' if created else 'Log entry updated'
