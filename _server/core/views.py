@@ -146,4 +146,5 @@ def reader_log_id(req, user_id):
 @login_required
 def reader_log_update(req):
     ''' Update or create reader log entry '''
+    pass
     
