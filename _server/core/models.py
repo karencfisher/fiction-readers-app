@@ -17,7 +17,13 @@ class Book(models.Model):
     genre = models.ForeignKey('Genre', on_delete=models.CASCADE, null=True)
     
     def reviews(self):
-        return Review.objects.filter(book=self)
+        return Review.objects.filter(book=self).values(
+            'id',
+            'user',
+            'user__username',
+            'review',
+            'rating'
+        )
     
 class Author(models.Model):
     id = models.BigAutoField(primary_key=True)

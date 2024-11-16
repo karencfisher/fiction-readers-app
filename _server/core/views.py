@@ -71,8 +71,19 @@ def book_id(req, id):
     ''' Get complete book, including reviews '''
     try:
         book_obj = Book.objects.get(id=id)
-        book = model_to_dict(book_obj)
-        book['reviews'] = [model_to_dict(review) for review in book_obj.reviews()]
+        book = Book.objects.filter(id=id).values(
+            'id',
+            'year_published',
+            'title',
+            'synopsis',
+            'info_link',
+            'average_rating',
+            'cover_link',
+            'author__author_name',
+            'publisher__publisher_name',
+            'genre__genre'
+        )[0]
+        book['reviews'] = [review for review in list(book_obj.reviews())]
         return JsonResponse(book)
     except Book.DoesNotExist:
         return JsonResponse({'error': f"Book with id '{id}' not found"}, status=404)
@@ -80,6 +91,11 @@ def book_id(req, id):
         traceback.print_tb(err.__traceback__)
         print(err)
         return JsonResponse({'error': 'Server error'}, status=500)
+    
+@login_required
+def book_update(req):
+    ''' Add a book by user '''
+    pass
 
 @login_required
 def review_id(req, id):
@@ -94,7 +110,7 @@ def review_id(req, id):
             'rating'
         )[0]
         return JsonResponse(review)
-    except Review.DoesNotExist:
+    except IndexError:
         return JsonResponse({'error': f"Review with id '{id}' not found"}, status=404)
     except Exception as err:
         traceback.print_tb(err.__traceback__)
@@ -108,8 +124,24 @@ def review_update(req):
 
 @login_required
 def reader_log_id(req, user_id):
-    ''' Get reader log by user id '''
-    pass
+    ''' Get reader log by user id, including book '''
+    try:
+        shelf = ReaderLog.objects.filter(user=user_id).select_related('book__title').values(
+            'user_id',
+            'book_id',
+            'status',
+            'book__title',
+            'book__author__author_name',
+            'book__review',
+            'book__cover_link'
+        )
+        if not shelf:
+            return JsonResponse({'error': f"ReaderLog with id '{user_id}' not found"}, status=404)
+        return JsonResponse({'data': list(shelf)})
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
 
 @login_required
 def reader_log_update(req):
