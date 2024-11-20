@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            font-family: Verdana, sans-serif
+        }
+
+        .books {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            height: 80px;
+            border-style: solid;
+            border-width: 1px;
+            overflow-x: scroll;
+        }
+
+        .registration {
+            width: 100%;
+            margin: 0;
+        }
+
+        .tab {
+            overflow: hidden;
+            border: None;
+            background-color: #f1f1f1;
+          }
+
+        .tab button {
+            background-color: #ddd;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border-width: 0px;
+            outline: none;
+            float: left;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+            margin: 0;
+            transform: translateY(2.5px);
+        }
+        
+        /* Change background color of buttons on hover */
+        
+        /* Create an active/current tablink class */
+        .tab button[data-active="true"] {
+            background-color: #bbb;
+        }
+        
+        /* Style the tab content */
+        .tab-content {
+            padding: 6px 12px;
+            background-color: #bbb;
+            margin: 0;
+            display: none;
+            width: 95%;
+            padding: 10px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        #login-form[data-open="true"] {
+            display: block;
+        }
+
+        #register-form[data-open="true"] {
+            display: block;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        form button {
+            width: fit-content;
+        }
+
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        input {
+            width: 100%;
+            align-self: center;
+            flex: 1;
+        }
+
+        #message {
+            color: red;
+            font-size: 1.2rem;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="books">
+        </div>
+        <script>
+
+        </script>
+
+        <div class="registration">
+            <div class="tab">
+                <button class="tablinks" id="login" data-active="true">Login</button>
+                <button class="tablinks" id="register" data-active="false">Register</button>
+            </div>
+            <div id="login-form" class="tab-content" data-open="true">
+                <form action="/landing/sign_in/" method="post">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" value="{{ username }}">
+                    </div>
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" value="{{ password }}">
+                        <span class="material-icons-outlined eyes">visibility_off</span>
+                    </div>
+                    <button>Sign In</button>
+                </form>
+            </div>
+            <div id="register-form" class="tab-content" data-open="false">
+                <form action="/landing/sign_up/" method="post">
+                    {% csrf_token %}
+                    <div class="field">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ first_name }}">
+                    </div>
+                    <div class="field">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ last_name }}">
+                    </div>
+                    <div class="field">
+                        <label for="user_name">Username</label>
+                        <input type="text" id="user_name" name="user_name" value="{{ username }}">
+                    </div>
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" value="{{ email }}">
+                    </div>
+                    <div class="field">
+                        <label for="pass_word">Password</label>
+                        <input type="password" id="pass_word" name="pass_word" value="{{ password }}">
+                        <span class="material-icons-outlined eyes">visibility_off</span>
+                    </div>
+                    <button>Create Account</button>
+                    </form>
+            </div>
+            <script>
+                let tab = "login";
+                const loginTab = document.getElementById("login");
+                const loginForm = document.getElementById("login-form")
+                const registerTab = document.getElementById("register");
+                const registerForm = document.getElementById("register-form");
+                const tabLinks = [...document.getElementsByClassName("tablinks")];
+                tabLinks.forEach((item) => {
+                    item.addEventListener("click", () => {
+                        if (tab === "registration") {
+                            loginTab.dataset.active = "true";
+                            loginForm.dataset.open = "true";
+                            registerTab.dataset.active = "false";
+                            registerForm.dataset.open = "false";
+                            tab = "login";
+                        }
+                        else {
+                            loginTab.dataset.active = "false";
+                            loginForm.dataset.open = "false";
+                            registerTab.dataset.active = "true";
+                            registerForm.dataset.open = "true";
+                            tab = "registration";
+                        }
+                    });
+                });
+
+                const eyes = [...document.getElementsByClassName("eyes")];
+                eyes.forEach((item) => {
+                    item.addEventListener("click", (e) => {
+                        const textField = e.target.previousElementSibling;
+                        if (e.target.innerText === "visibility_off") {
+                            e.target.innerText = "visibility";
+                            textField.setAttribute("type", "text");
+                        }
+                        else {
+                            e.target.innerText = "visibility_off";
+                            textField.setAttribute("type", "password");
+                        }
+                    });
+                });
+            </script>
+        </div>
+        <div id="message">{{ message }}</div>
+    </main>
+</body>

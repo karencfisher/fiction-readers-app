@@ -7,9 +7,9 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Book(models.Model):
     id = models.BigAutoField(primary_key=True)
-    year_published = models.IntegerField()
-    title = models.CharField(max_length=100)
-    synopsis = models.TextField()
+    year_published = models.IntegerField(blank=False)
+    title = models.CharField(max_length=100, blank=False)
+    synopsis = models.TextField(blank=False)
     info_link = models.CharField(max_length=100)
     average_rating = models.IntegerField(default=0)
     cover_link= models.CharField(max_length=100)
@@ -36,16 +36,16 @@ class Book(models.Model):
     
 class Author(models.Model):
     id = models.BigAutoField(primary_key=True)
-    author_name= models.TextField(unique=True)
+    author_name= models.TextField(unique=True, blank=False)
     
 
 class Publisher(models.Model):
     id = models.BigAutoField(primary_key=True)
-    publisher_name = models.TextField(unique=True)
+    publisher_name = models.TextField(unique=True, blank=False)
     
     
 class Genre(models.Model):
-    id = models.BigAutoField(primary_key=True)
+    id = models.BigAutoField(primary_key=True, blank=False)
     genre = models.TextField()
     
     class Meta:
@@ -58,7 +58,7 @@ class Review(models.Model):
     id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='review', null=True)
-    review = models.TextField()
+    review = models.TextField(blank=False)
     rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(5)])
     
     

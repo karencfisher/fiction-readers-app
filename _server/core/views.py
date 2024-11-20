@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import traceback
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
@@ -16,6 +17,19 @@ if not settings.DEBUG:
     MANIFEST = json.load(f)
 
 # Create your views here.
+def books_reader_logs(req):
+    ''' Get random sample of books for reader_logs (for landing page) '''
+    try:
+        results = Book.objects.filter(reader_log__isnull=False)\
+            .distinct().values('id', 'title', 'cover_link')
+        random_books = random.sample(list(results), 20)
+        return JsonResponse({'data': random_books})
+            
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+    
 @login_required
 def index(req):
     context = {
@@ -26,17 +40,6 @@ def index(req):
         "css_file": "" if settings.DEBUG else MANIFEST["src/main.ts"]["css"][0]
     }
     return render(req, "core/index.html", context)
-
-def books_reader_logs(req):
-    ''' Search books for reader_logs (can be public) '''
-    try:
-        results = Book.objects.filter(reader_log__isnull=False)\
-            .distinct().values('id', 'title', 'cover_link')
-    except Exception as err:
-        traceback.print_tb(err.__traceback__)
-        print(err)
-        return JsonResponse({'error': 'Server error'}, status=500)
-    return JsonResponse({'data': list(results)})
 
 @login_required
 def books_search(req):
@@ -62,6 +65,7 @@ def books_search(req):
         if not collection:
             return JsonResponse({'error': f"No data found for '{method}: {query}'"}, status=404)
         return JsonResponse({'data': list(collection)})
+    
     except Exception as err:
         traceback.print_tb(err.__traceback__)
         print(err)
@@ -86,6 +90,7 @@ def book_id(req, id):
         )[0]
         book['reviews'] = [review for review in list(book_obj.reviews())]
         return JsonResponse(book)
+    
     except Book.DoesNotExist:
         return JsonResponse({'error': f"Book with id '{id}' not found"}, status=404)
     except Exception as err:
@@ -102,15 +107,15 @@ def book_new(req):
         # Genre should be in existing list, but new author and publisher can be added
         book_info['genre'] = Genre.objects.get(genre=book_info['genre'])
         book_info['author'], _ = Author.objects.get_or_create(author_name=book_info['author'])
-        book_info['publisher'], _ = Publisher.objects.get_or_create(publisher_name=book_info['publisher]'])
+        book_info['publisher'], _ = Publisher.objects.get_or_create(publisher_name=book_info['publisher'])
         new_book = Book.objects.create(**book_info)
         new_book.save()
         return JsonResponse({'success': 'Book added'}, status=201)
     
     except IntegrityError:
-        return JsonResponse({'error': f"Title '{book_info['title']} already exysts"}, status=400)
+        return JsonResponse({'error': f"This edition of '{book_info['title']}' already exists"}, status=400)
     except Genre.DoesNotExist:
-        return JsonResponse({'error': f"Invalid genre '{book_info['genre']}"})
+        return JsonResponse({'error': f"Invalid genre '{book_info['genre']}'"})
     except Exception as err:
         traceback.print_tb(err.__traceback__)
         print(err)
@@ -129,6 +134,7 @@ def review_id(req, id):
             'rating'
         )[0]
         return JsonResponse(review)
+    
     except IndexError:
         return JsonResponse({'error': f"Review with id '{id}' not found"}, status=404)
     except Exception as err:
@@ -171,6 +177,7 @@ def reader_log_id(req, user_id):
         if not shelf:
             return JsonResponse({'error': f"ReaderLog with id '{user_id}' not found"}, status=404)
         return JsonResponse({'data': list(shelf)})
+    
     except Exception as err:
         traceback.print_tb(err.__traceback__)
         print(err)
