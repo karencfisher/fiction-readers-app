@@ -15,8 +15,9 @@ MANIFEST = {}
 if not settings.DEBUG:
     f = open(f"{settings.BASE_DIR}/core/static/manifest.json")
     MANIFEST = json.load(f)
+    
 
-# Create your views here.
+### Routes not requiring authentication (for landing page) ###
 def books_reader_logs(req):
     ''' Get random sample of books for reader_logs (for landing page) '''
     try:
@@ -30,6 +31,25 @@ def books_reader_logs(req):
         print(err)
         return JsonResponse({'error': 'Server error'}, status=500)
     
+def books_genre_samples(req):
+    ''' Get books from two selected genres (for landing page) '''
+    try:
+        genres = Genre.objects.all().values('genre')
+        selected_genres = random.sample(list(genres), 2)
+        shelves = []
+        for genre in selected_genres:
+            collection = Book.objects.filter(genre__genre=genre['genre'])\
+                    .values('id', 'title', 'cover_link')[:20]
+            shelves.append({'genre': genre['genre'], 'books': list(collection)})
+        return JsonResponse({'data': shelves})
+    
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+
+
+### Routes requiring authentication ###    
 @login_required
 def index(req):
     context = {
