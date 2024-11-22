@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import reactLogo from '../../assets/react.svg'
 import viteLogo from '/vite.svg'
 import '../../App.css'
 
 export function Home() {
   const [count, setCount] = useState(0)
+  const navigate = useNavigate();
 
   async function logout() {
     const res = await fetch("/registration/logout/", {
@@ -13,7 +15,7 @@ export function Home() {
 
     if (res.ok) {
       // navigate away from the single page app!
-      // window.location = "/registration/sign_in/";
+      navigate('/');
     } else {
       // handle logout failed!
     }

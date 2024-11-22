@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './forms.css';
 
 export function LoginForm() {
@@ -6,6 +7,7 @@ export function LoginForm() {
     const [password, setPassword] = useState("");
     const [visibility, setVisibility] = useState("visibility_off")
     const [passwordType, setPasswordType] = useState("password")
+    const navigate = useNavigate();
 
     async function login(e) {
         e.preventDefault();
@@ -13,7 +15,10 @@ export function LoginForm() {
         const result = await fetch('/registration/sign_in/', {
             method: "post",
             credentials: "same-origin",
-            body: JSON.stringify({username, password}),
+            body: JSON.stringify({
+                username: username, 
+                password: password
+            }),
             headers: {
                 "Content-Type": "application/json"
             }
@@ -25,6 +30,7 @@ export function LoginForm() {
         }
         else {
             console.log("logged in")
+            navigate('/home');
         }
     }
 

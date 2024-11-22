@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import './BookShelf.css';
 
 export function BookShelf(props) {
-    const {kind, books, title} = props;
+    const {kind, books, title, callback} = props;
+
+    console.log(callback);
 
     return (
         <div className="shelf" id={kind}>
@@ -11,7 +13,8 @@ export function BookShelf(props) {
             </div>
             <div className="shelf-tray">
                 {books.map((book, i) => (
-                    <img key={i} src={book.cover_link} alt={book.title}></img>
+                    <img key={i} src={book.cover_link} alt={book.title} id={book.id}
+                         onClick={callback? callback: null}></img>
                 ))}
             </div>
         </div>        

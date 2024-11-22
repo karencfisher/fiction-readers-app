@@ -1,4 +1,5 @@
 import traceback
+import json
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
@@ -7,9 +8,6 @@ from django.http import HttpRequest
 from django.http import JsonResponse
 
 # Create your views here.
-def landing(req: HttpRequest):
-    return render(req, 'landing/landing.html')
-    
 def sign_up(req: HttpRequest):
     try:
         user = User.objects.create_user(
@@ -30,9 +28,12 @@ def sign_up(req: HttpRequest):
 
 def sign_in(req: HttpRequest):
     try:
-        username = req.POST.get("username")
-        password = req.POST.get("password")
-        user = authenticate(req, username=username, password=password)
+        body = json.loads(req.body)
+        user = authenticate(
+            req, 
+            username=body['username'],
+            password=body['password']
+        )
         if user is not None:
             login(req, user)
             return JsonResponse({'success': 'Logged in'})
