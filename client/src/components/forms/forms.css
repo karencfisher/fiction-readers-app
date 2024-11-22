@@ -1,0 +1,25 @@
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+form button {
+    width: fit-content;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+input {
+    width: 100%;
+    align-self: center;
+    flex: 1;
+}
+
+.eyes {
+    cursor: pointer;
+}

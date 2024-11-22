@@ -1,0 +1,19 @@
+.container {
+    position: absolute;
+    top: 25%;
+    display: flex;
+    flex-direction: column;
+    background-color: lightgray;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.content {
+    display: flex;
+    gap: 10px;
+}
+
+.kind {
+    font-size: 3rem;
+    color: red;
+}

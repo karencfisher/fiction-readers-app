@@ -5,7 +5,8 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import App from './App.jsx'
-import {Home} from "./Home.jsx";
+import {Home} from "./components/pages/Home.jsx"
+import {Landing} from "./components/pages/Landing.jsx"
 import './index.css'
 import 'vite/modulepreload-polyfill'
 
@@ -16,8 +17,12 @@ const router = createHashRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <Landing />
       },
+      {
+        path: "/home",
+        element: <Home />
+      }
       
     ]
   },

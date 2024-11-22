@@ -1,0 +1,49 @@
+.tab-container {
+    display: flex;
+    flex-direction: column;
+    width: 98%;
+}
+
+.tab {
+    overflow: hidden;
+    border: None;
+  }
+
+.tab button {
+    background-color: #ddd;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-width: 0px;
+    outline: none;
+    float: left;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+    margin: 0;
+    transform: translateY(2.5px);
+}
+
+/* Change background color of buttons on hover */
+
+/* Create an active/current tablink class */
+.tab button[data-active="true"] {
+    background-color: #bbb;
+}
+
+/* Style the tab content */
+.tab-content {
+    padding: 6px 12px;
+    background-color: #bbb;
+    margin: 0;
+    display: none;
+    width: 95%;
+    padding: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.tab-content[data-open="true"] {
+    display: block;
+}

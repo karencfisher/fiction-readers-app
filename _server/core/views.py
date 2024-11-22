@@ -18,6 +18,16 @@ if not settings.DEBUG:
     
 
 ### Routes not requiring authentication (for landing page) ###
+def index(req):
+    context = {
+        "asset_url": os.environ.get("ASSET_URL", ""),
+        "debug": settings.DEBUG,
+        "manifest": MANIFEST,
+        "js_file": "" if settings.DEBUG else MANIFEST["src/main.ts"]["file"],
+        "css_file": "" if settings.DEBUG else MANIFEST["src/main.ts"]["css"][0]
+    }
+    return render(req, "core/index.html", context)
+
 def books_reader_logs(req):
     ''' Get random sample of books for reader_logs (for landing page) '''
     try:
@@ -50,17 +60,6 @@ def books_genre_samples(req):
 
 
 ### Routes requiring authentication ###    
-@login_required
-def index(req):
-    context = {
-        "asset_url": os.environ.get("ASSET_URL", ""),
-        "debug": settings.DEBUG,
-        "manifest": MANIFEST,
-        "js_file": "" if settings.DEBUG else MANIFEST["src/main.ts"]["file"],
-        "css_file": "" if settings.DEBUG else MANIFEST["src/main.ts"]["css"][0]
-    }
-    return render(req, "core/index.html", context)
-
 @login_required
 def books_search(req):
     ''' Search books by criteria '''
