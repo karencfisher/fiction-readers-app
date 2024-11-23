@@ -166,7 +166,9 @@ def review_update(req):
     ''' Create or update a review '''
     try:
         review_info = req.POST.dict()
-        review_info['user'] = User.objects.get(req.user)
+        if (review_info['user_id'] != req.user.id):
+            return JsonResponse({'error': 'Denied'}, status=403)
+        review_info['user'] = User.objects.get(id=review_info['user_id'])
         review_info['book'] = Book.objects.get(id=review_info['book'])
         new_review, created = Review.objects.update_or_create(**review_info)
         new_review.save()
@@ -183,18 +185,32 @@ def review_update(req):
 @login_required
 def reader_log_id(req, user_id):
     ''' Get reader log by user id, including book '''
+    # Only get user's log
+    if (req.user.id != user_id):
+        return JsonResponse({'Error': 'Denied'}, status=403)
     try:
-        shelf = ReaderLog.objects.filter(user=user_id).select_related('book__title').values(
+        result = ReaderLog.objects.filter(user=user_id).select_related('book__title').values(
             'user_id',
             'book_id',
             'status',
             'book__title',
             'book__author__author_name',
-            'book__review',
             'book__cover_link'
         )
-        if not shelf:
+        if not result:
             return JsonResponse({'error': f"ReaderLog with id '{user_id}' not found"}, status=404)
+        
+        shelf = []
+        for row in list(result):
+            book = {
+                'user_id': row['user_id'],
+                'id': row['book_id'],
+                'status': row['status'],
+                'title': row['book__title'],
+                'author': row['book__author__author_name'],
+                'cover_link': row['book__cover_link']
+            }
+            shelf.append(book);
         return JsonResponse({'data': list(shelf)})
     
     except Exception as err:
@@ -207,7 +223,9 @@ def reader_log_update(req):
     ''' Update or create reader log entry '''
     try:
         log_info = req.POST.dict()
-        log_info['user'] = User.objects.get(req.user)
+        if (log_info['uesr_id'] != req.user.id):
+            return JsonResponse({'error': 'Denied'}, status=403)
+        log_info['user'] = User.objects.get(id=log_info['user_id'])
         log_info['book'] = Book.objects.get(id=log_info['book'])
         new_log, created = ReaderLog.objects.update_or_create(**log_info)
         new_log.save()

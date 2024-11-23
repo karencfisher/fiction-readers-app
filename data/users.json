@@ -4,20 +4,23 @@
         "email": "harriet@klausner.com",
         "first_name": "Harriet",
         "last_name": "Klausner",
-        "password": "password1"
+        "password": "password1",
+        "original_name": "Harriet Klausner"
     },
     {
         "username": "ACustomer",
         "email": "a_customer@gmail.com",
         "first_name": "Alfred",
         "last_name": "Customer",
-        "password": "password2"
+        "password": "password2",
+        "original_name": "A Customer"
     },
     {
         "username": "CoffeeGurl",
         "email": "cg@CoffeeGurl.com",
         "first_name": "Cathy",
         "last_name": "Coffee",
-        "password": "password3"
+        "password": "password3",
+        "original_name": "CoffeeGurl"
     }
 ]

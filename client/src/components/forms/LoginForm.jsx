@@ -11,7 +11,6 @@ export function LoginForm() {
 
     async function login(e) {
         e.preventDefault();
-        console.log("Logging in...")
         const result = await fetch('/registration/sign_in/', {
             method: "post",
             credentials: "same-origin",
@@ -29,7 +28,6 @@ export function LoginForm() {
             console.log(response.error)
         }
         else {
-            console.log("logged in")
             navigate('/home');
         }
     }

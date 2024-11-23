@@ -4,8 +4,6 @@ import './BookShelf.css';
 export function BookShelf(props) {
     const {kind, books, title, callback} = props;
 
-    console.log(callback);
-
     return (
         <div className="shelf" id={kind}>
             <div className="shelf-title">

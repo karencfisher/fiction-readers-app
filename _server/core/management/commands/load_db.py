@@ -22,7 +22,9 @@ class Command(BaseCommand):
         self.stdout.write("Loading sample users...")
         with open('../data/users.json') as FILE:
             users = json.load(FILE)
-            
+        for user in users:
+            del user['original_name']
+        
         # Reinitialize User table
         User.objects.all().delete()
         with connection.cursor() as cursor:

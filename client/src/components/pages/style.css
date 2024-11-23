@@ -24,9 +24,10 @@ main {
 header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin: 0px 0px 10px 0px;
     padding: 10px;
-    width: 100%;
+    width: 95%;
     background-color: lightblue;
     height: 2rem;
 }
@@ -57,6 +58,29 @@ h2 {
 
 .shelf-tray img {
     max-height: 120px;
+}
+
+@media screen and (min-width: 768px) {
+    header {
+        width: 98%;
+    }
+
+    .columns {
+        display: flex;
+        gap: 10px;
+    }
+
+    .blurb {
+        min-width: 50%;
+    }
+
+    .registration {
+        min-width: 50%;
+    }
+
+    #genres {
+        display: block;
+    }
 }
 
 @media screen and (min-width: 900px) {
@@ -94,21 +118,3 @@ h2 {
 
 }
 
-@media screen and (min-width: 768px) {
-    .columns {
-        display: flex;
-        gap: 10px;
-    }
-
-    .blurb {
-        min-width: 50%;
-    }
-
-    .registration {
-        min-width: 50%;
-    }
-
-    #genres {
-        display: block;
-    }
-}

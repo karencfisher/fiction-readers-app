@@ -1,50 +1,108 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import reactLogo from '../../assets/react.svg'
-import viteLogo from '/vite.svg'
-import '../../App.css'
+import { BookShelf } from '../widgets/BookShelf';
 
 export function Home() {
-  const [count, setCount] = useState(0)
-  const navigate = useNavigate();
+	const [userName, setUserName] = useState("");
+	const [userID, setUserID] = useState(0);
+	const [booksRead, setBooksRead] = useState([]);
+	const [booksReading, setBooksReading] = useState([]);
+	const [booksToRead, setBooksToRead] = useState([]);
+	const navigate = useNavigate();
 
-  async function logout() {
-    const res = await fetch("/registration/logout/", {
-      credentials: "same-origin", // include cookies!
-    });
+	async function getUserInfo() {
+		const result = await fetch('/registration/whoami', {
+			credentials: "same-origin"
+		});
+		const answer = await result.json();
+		if (!answer.isAuthenticated) {
+			navigate('/');
+			return null;
+		}
+		setUserName(answer.username);
+		setUserID(answer.user_id);
+		return answer;
+	}
 
-    if (res.ok) {
-      // navigate away from the single page app!
-      navigate('/');
-    } else {
-      // handle logout failed!
-    }
-  }
+	async function getBookShelves() {
+		const result = await fetch(`/reader_logs/${userID}`, {
+			credentials: "same-origin"
+		});
+		const books = await result.json();
+		return books.data;
+	}
+
+	async function logout() {
+		const res = await fetch("/registration/logout/", {
+			credentials: "same-origin"
+		});
+
+		if (res.ok) {
+			// navigate away from the single page app!
+			navigate('/');
+		}
+	}
+
+	function getSelectedBook(e) {
+		console.log(e.target.id);
+	}
+
+	useEffect(() => {
+		getUserInfo();
+	}, []);
+
+	useEffect(() => {
+		if (userID === 0) return;
+		const fetchBooks = async () => {
+			const books = await getBookShelves();
+			const readBooks = []
+			const readingBooks = [];
+			const toReadBooks =[];
+			for (const book of books) {
+				if (book.status === "READ") {
+					readBooks.push(book);
+				}
+				else if (book.status === "READING") {
+					readingBooks.push(book);
+				}
+				else {
+					toReadBooks.push(book);
+				}
+			}
+			setBooksRead(readBooks);
+			setBooksReading(readingBooks);
+			setBooksToRead(toReadBooks);
+		};
+		fetchBooks();
+	}, [userID]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <button onClick={logout}>Logout</button>
-    </>
+	<div className="main-container">
+		<header>
+			<h1 className="page-title">{userName}'s Bookshelves</h1>
+			<button onClick={logout}>Logout</button>
+		</header>
+		<main>
+			<BookShelf
+				kind="books-read"
+				title="Books I've read"
+				books={booksRead}
+				callback = {getSelectedBook}
+			/>
+			<BookShelf
+				kind="books-reading"
+				title="Books I am reading"
+				books={booksReading}
+				callback = {getSelectedBook}
+			/>
+			<BookShelf
+				kind="books-to-read"
+				title="Books I plan to read"
+				books={booksToRead}
+				callback = {getSelectedBook}
+			/>
+		</main>
+	</div>
   )
 }
 

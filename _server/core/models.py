@@ -68,9 +68,7 @@ class ReaderLog(models.Model):
     STATUS_CHOICES = [
         ('TOREAD', 'To Read'),
         ('READING', 'Reading'),
-        ('DNF', 'Did Not Finish'),
-        ('SKIMMED', 'Skimmed'),
-        ('COVER2COVER', 'Cover to Cover'),
+        ('READ', 'Read')
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, null=True)
     book = models.ForeignKey('Book', on_delete=models.CASCADE, related_name='reader_log', null=True)

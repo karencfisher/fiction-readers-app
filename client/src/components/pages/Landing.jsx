@@ -1,15 +1,23 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BookShelf } from '../widgets/BookShelf';
 import { Tabs } from '../widgets/Tabs';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
 import './style.css';
 
-
 export function Landing(props) {
     const [readersBooks, setReadersBooks] = useState([]);
     const [genreBooks, setGenreBooks] = useState([]);
+    const navigate = useNavigate();
 
+    async function isAuthenticated() {
+        const result = await fetch('/registration/whoami', {
+			credentials: "same-origin"
+		});
+        const answer = await result.json();
+        if (answer.isAuthenticated) navigate('/home');
+    }
 
     async function getBooks(section) {
         const result = await fetch(`/books/${section}`, {
@@ -20,6 +28,7 @@ export function Landing(props) {
     }
 
     useEffect(() => {
+        isAuthenticated();
         const fetchBooks = async () => {
             const logBooks = await getBooks("reader_logs");
             setReadersBooks(logBooks);
