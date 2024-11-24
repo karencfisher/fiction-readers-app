@@ -84,22 +84,22 @@ export function Home() {
 		</header>
 		<main>
 			<BookShelf
-				kind="books-read"
+				kind="clickable"
 				title="Books I've read"
 				books={booksRead}
-				callback = {getSelectedBook}
+				onclick = {getSelectedBook}
 			/>
 			<BookShelf
-				kind="books-reading"
+				kind="clickable"
 				title="Books I am reading"
 				books={booksReading}
-				callback = {getSelectedBook}
+				onclick = {getSelectedBook}
 			/>
 			<BookShelf
-				kind="books-to-read"
+				kind="clickable"
 				title="Books I plan to read"
 				books={booksToRead}
-				callback = {getSelectedBook}
+				onclick = {getSelectedBook}
 			/>
 		</main>
 	</div>

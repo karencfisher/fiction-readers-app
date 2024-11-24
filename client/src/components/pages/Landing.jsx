@@ -8,7 +8,7 @@ import './style.css';
 
 export function Landing(props) {
     const [readersBooks, setReadersBooks] = useState([]);
-    const [genreBooks, setGenreBooks] = useState([]);
+    const [genreBooks, setGenreBooks] = useState([]); 
     const navigate = useNavigate();
 
     async function isAuthenticated() {
@@ -46,7 +46,6 @@ export function Landing(props) {
             </header>
             <main>
                 <BookShelf
-                    kind="readers"
                     title="Books read by members"
                     books={readersBooks}
                 />
@@ -77,7 +76,7 @@ export function Landing(props) {
                 {genreBooks.map((bookSet, i) => (
                     <BookShelf 
                         key={i}
-                        kind="genres"
+                        kind="optional"
                         title={bookSet.genre} 
                         books={bookSet.books}
                     />

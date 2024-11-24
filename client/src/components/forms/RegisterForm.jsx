@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { PopUp } from '../widgets/PopUp';
 import './forms.css';
 
 export function RegisterForm() {
@@ -9,9 +11,43 @@ export function RegisterForm() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
+    const [popup, setPopup] = useState({open: false});
+
+    const navigate = useNavigate();
+    const popUpHandler = () => setPopup({...popup, open: false})
 
     async function register(e) {
-    
+        e.preventDefault();
+        const result = await fetch('/registration/sign_up/', {
+            method: "post",
+            credentials: "same-origin",
+            body: JSON.stringify({
+                username: username, 
+                password: password,
+                email: email,
+                first_name: firstName,
+                last_name: lastName
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+        const response = await result.json();
+
+        if (Object.keys(response)[0] === "error") {
+            setPopup({...popup, 
+                msg: response.error, 
+                kind: "error",
+                open: true
+            });
+        }
+        else {
+            setPopup({...popup, 
+                msg: "Joined successfully! You may login now.", 
+                kind: "info",
+                open: true
+            });
+        }
     }
 
     function toggleVisibility(e) {
@@ -26,7 +62,7 @@ export function RegisterForm() {
     }
 
     return (
-        <form action="/landing/sign_up/" method="post">
+        <form onSubmit={register} method="post">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
             <div className="field">
                 <label htmlFor="first_name">First Name</label>
@@ -55,6 +91,13 @@ export function RegisterForm() {
                 <span className="material-icons-outlined eyes" onClick={toggleVisibility}>{visibility}</span>
             </div>
             <button>Create Account</button>
+            {popup.open && 
+                (<PopUp  
+                    kind={popup.kind}
+                    message={popup.msg}
+                    callback={popUpHandler}
+                    modal={true}
+                />)}
         </form>
     )
 }

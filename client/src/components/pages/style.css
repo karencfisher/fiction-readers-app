@@ -32,6 +32,10 @@ header {
     height: 2rem;
 }
 
+button {
+    cursor: pointer;
+}
+
 h1.page-title {
     font-size: 1.2rem;
     font-weight: normal;
@@ -44,16 +48,21 @@ h2 {
     margin: 0;
 }
 
-#genres {
-    display: none;
-}
-
 .columns {
     width: 100%;
+    margin: 5px 10px 5px 10px;
 }
 
 .shelf-tray {
-    max-height: 150px;
+    height: 130px;
+}
+
+.shelf[data-kind="optional"] {
+    display: none;
+}
+
+.shelf[data-kind="clickable"] .shelf-tray img {
+    cursor: pointer;
 }
 
 .shelf-tray img {
@@ -68,17 +77,20 @@ h2 {
     .columns {
         display: flex;
         gap: 10px;
+        padding-left: 20px;
+        padding-right: 20px;
     }
 
     .blurb {
         min-width: 50%;
+        margin-left: 10px;
     }
 
     .registration {
-        min-width: 50%;
+        min-width: 45%;
     }
 
-    #genres {
+    .shelf[data-kind="optional"] {
         display: block;
     }
 }
@@ -105,10 +117,11 @@ h2 {
         border-bottom-right-radius: 10px;
         padding-top: 20px;
         font-size: 1rem;
+        min-height: 100vh;
     }
 
     .shelf-tray {
-        max-height: 200px;
+        height: 200px;
         width: 99%;
     }
     
