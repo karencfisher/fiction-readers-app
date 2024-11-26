@@ -53,6 +53,14 @@ h2 {
     margin: 5px 10px 5px 10px;
 }
 
+.tab-content {
+    width: 95%;
+}
+
+.columns .tab-content {
+    width: 95%;
+}
+
 .shelf-tray {
     height: 130px;
 }
@@ -93,6 +101,10 @@ h2 {
     .shelf[data-kind="optional"] {
         display: block;
     }
+
+    .tab-content {
+        width: 97%;
+    }
 }
 
 @media screen and (min-width: 900px) {
@@ -127,6 +139,10 @@ h2 {
     
     .shelf-tray img {
         max-height: 180px;
+    }
+
+    .tab-content {
+        width: 98%;
     }
 
 }

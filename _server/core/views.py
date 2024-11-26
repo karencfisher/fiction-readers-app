@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.db.utils import IntegrityError
+from django.db.models import F
 from django.contrib.auth.decorators import login_required
 from .models import *
 
@@ -32,7 +33,7 @@ def books_reader_logs(req):
     ''' Get random sample of books for reader_logs (for landing page) '''
     try:
         results = Book.objects.filter(reader_log__isnull=False)\
-            .distinct().values('id', 'title', 'cover_link')
+            .distinct().annotate(book_id = F('id')).values('book_id', 'title', 'cover_link')
         random_books = random.sample(list(results), 20)
         return JsonResponse({'data': random_books})
             
@@ -49,7 +50,7 @@ def books_genre_samples(req):
         shelves = []
         for genre in selected_genres:
             collection = Book.objects.filter(genre__genre=genre['genre'])\
-                    .values('id', 'title', 'cover_link')[:20]
+                    .annotate(book_id = F('id')).values('book_id', 'title', 'cover_link')[:20]
             shelves.append({'genre': genre['genre'], 'books': list(collection)})
         return JsonResponse({'data': shelves})
     
@@ -95,18 +96,22 @@ def book_id(req, id):
     ''' Get complete book, including reviews '''
     try:
         book_obj = Book.objects.get(id=id)
-        book = Book.objects.filter(id=id).values(
-            'id',
-            'year_published',
-            'title',
-            'synopsis',
-            'info_link',
-            'average_rating',
-            'cover_link',
-            'author__author_name',
-            'publisher__publisher_name',
-            'genre__genre'
-        )[0]
+        book = Book.objects.filter(id=id).annotate(
+                author_name = F('author__author_name'),
+                publisher_name = F('publisher__publisher_name'),
+                genre_name = F('genre__genre')
+            ).values(
+                'id',
+                'year_published',
+                'title',
+                'synopsis',
+                'info_link',
+                'average_rating',
+                'cover_link',
+                'author_name',
+                'publisher_name',
+                'genre_name'
+            )[0]
         book['reviews'] = [review for review in list(book_obj.reviews())]
         return JsonResponse(book)
     
@@ -144,14 +149,19 @@ def book_new(req):
 def review_id(req, id):
     ''' Get review by id, including user name, author, and title '''
     try:
-        review = Review.objects.filter(id=id).select_related('book__author', 'user').values(
-            'id', 
-            'user__username', 
-            'book__author__author_name', 
-            'book__title', 
-            'review', 
-            'rating'
-        )[0]
+        review = Review.objects.filter(id=id).select_related('book__author', 'user')\
+            .annotate(username=F('user__username'), 
+                author = F('book__author__author_name'),
+                title = F('book__title')
+            ).values(
+                'id',
+                'username',
+                'author',
+                'title',
+                'review',
+                'rating'
+            )[0]
+        
         return JsonResponse(review)
     
     except IndexError:
@@ -189,34 +199,39 @@ def reader_log_id(req, user_id):
     if (req.user.id != user_id):
         return JsonResponse({'Error': 'Denied'}, status=403)
     try:
-        result = ReaderLog.objects.filter(user=user_id).select_related('book__title').values(
-            'user_id',
-            'book_id',
-            'status',
-            'book__title',
-            'book__author__author_name',
-            'book__cover_link'
-        )
-        if not result:
+        shelf = ReaderLog.objects.filter(user=user_id).select_related('book__title')\
+            .annotate(
+                title = F('book__title'),
+                author = F('book__author__author_name'),
+                cover_link = F('book__cover_link')
+            ).values(
+                'user_id',
+                'book_id',
+                'status',
+                'title',
+                'author',
+                'cover_link'
+            )
+        if not shelf:
             return JsonResponse({'error': f"ReaderLog with id '{user_id}' not found"}, status=404)
-        
-        shelf = []
-        for row in list(result):
-            book = {
-                'user_id': row['user_id'],
-                'id': row['book_id'],
-                'status': row['status'],
-                'title': row['book__title'],
-                'author': row['book__author__author_name'],
-                'cover_link': row['book__cover_link']
-            }
-            shelf.append(book);
         return JsonResponse({'data': list(shelf)})
     
     except Exception as err:
         traceback.print_tb(err.__traceback__)
         print(err)
         return JsonResponse({'error': 'Server error'}, status=500)
+    
+@login_required
+def reader_log_id_book_id(req, user_id, book_id):
+    if (req.user.id != user_id):
+        return JsonResponse({'Error': 'Denied'}, status=403)
+    try:
+        status = ReaderLog.objects.filter(user=user_id, book_id=book_id).values('status')[0]
+        return JsonResponse(status)
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)    
 
 @login_required
 def reader_log_update(req):

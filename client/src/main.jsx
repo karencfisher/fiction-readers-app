@@ -5,8 +5,9 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import App from './App.jsx'
-import {Home} from "./components/pages/Home.jsx"
-import {Landing} from "./components/pages/Landing.jsx"
+import { Home } from "./components/pages/Home.jsx"
+import { Landing } from "./components/pages/Landing.jsx"
+import { BookPage } from './components/pages/BookPage.jsx';
 
 const router = createHashRouter([
 	{
@@ -14,14 +15,17 @@ const router = createHashRouter([
 		element: <App />,
 		children: [
 			{
-			path: "/",
-			element: <Landing />
+				path: "/",
+				element: <Landing />
 			},
 			{
-			path: "/home",
-			element: <Home />
+				path: "/home",
+				element: <Home />
+			},
+			{
+				path: "/book_page",
+				element: <BookPage />
 			}
-			
 		]
 	},
 ],

@@ -15,7 +15,7 @@ export function BookShelf(props) {
                     <span className="add-link" onClick={addBook}>Add a book now</span>
                 </div>: <div></div>}
                 {books.map((book, i) => (
-                    <img key={i} src={book.cover_link} alt={book.title} id={book.id}
+                    <img key={i} src={book.cover_link} alt={book.title} id={book.book_id}
                          onClick={onclick? onclick: null}></img>
                 ))}
             </div>

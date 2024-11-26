@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { BookShelf } from '../widgets/BookShelf';
+import { Tabs } from '../widgets/Tabs';
+import { LogoutButton } from '../widgets/LogoutButton';
+import './style.css';
 
 export function Home() {
 	const [userName, setUserName] = useState("");
@@ -32,19 +35,8 @@ export function Home() {
 		return books.data;
 	}
 
-	async function logout() {
-		const res = await fetch("/registration/logout/", {
-			credentials: "same-origin"
-		});
-
-		if (res.ok) {
-			// navigate away from the single page app!
-			navigate('/');
-		}
-	}
-
 	function getSelectedBook(e) {
-		console.log(e.target.id);
+		navigate("/book_page", {state: {book_id: e.target.id}})
 	}
 
 	useEffect(() => {
@@ -76,33 +68,40 @@ export function Home() {
 		fetchBooks();
 	}, [userID]);
 
-  return (
-	<div className="main-container">
-		<header>
-			<h1 className="page-title">{userName}'s Bookshelves</h1>
-			<button onClick={logout}>Logout</button>
-		</header>
-		<main>
-			<BookShelf
-				kind="clickable"
-				title="Books I've read"
-				books={booksRead}
-				onclick = {getSelectedBook}
-			/>
-			<BookShelf
-				kind="clickable"
-				title="Books I am reading"
-				books={booksReading}
-				onclick = {getSelectedBook}
-			/>
-			<BookShelf
-				kind="clickable"
-				title="Books I plan to read"
-				books={booksToRead}
-				onclick = {getSelectedBook}
-			/>
-		</main>
-	</div>
-  )
+	return (
+		<div className="main-container">
+			<header>
+				<h1 className="page-title">{userName}'s Bookshelves</h1>
+				<LogoutButton />
+			</header>
+			<main>
+				
+				<BookShelf
+					kind="clickable"
+					title="Books I've read"
+					books={booksRead}
+					onclick = {getSelectedBook}
+				/>
+				<BookShelf
+					kind="clickable"
+					title="Books I am reading"
+					books={booksReading}
+					onclick = {getSelectedBook}
+				/>
+				<BookShelf
+					kind="clickable"
+					title="Books I plan to read"
+					books={booksToRead}
+					onclick = {getSelectedBook}
+				/>
+			
+				<Tabs
+					tabLabels={["Book Search"]}
+					tabContents={['<i>Coming soon!</i>']}
+				/>
+				
+			</main>
+		</div>
+  	)
 }
 

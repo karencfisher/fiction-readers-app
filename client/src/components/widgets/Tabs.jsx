@@ -21,7 +21,7 @@ export function Tabs(props) {
                 ))}
             </div>
             {tabContents.map((tabContent, i) => (
-                <div key={i}  className="tab-content" data-open={currentTab === i ? 'true' : 'false'}>
+                <div key={i} className="tab-content" data-open={currentTab === i ? 'true' : 'false'}>
                     {tabContent}
                 </div>
             ))}

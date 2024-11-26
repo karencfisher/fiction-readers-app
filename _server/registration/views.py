@@ -27,7 +27,7 @@ def sign_up(req: HttpRequest):
         return JsonResponse({'success': 'success'})
     
     except ValueError as err:
-        return JsonResponse({'error': str(err)})
+        return JsonResponse({'error': str(err)}, status=400)
     except IntegrityError:
         return JsonResponse({'error': f"Username \"{body['username']}\" is already used"}, status=400)
     except Exception as err:
@@ -46,7 +46,7 @@ def sign_in(req: HttpRequest):
         if user is not None:
             login(req, user)
             return JsonResponse({'success': 'Logged in'})
-        return JsonResponse({'error': 'Invalid username and/or password'})
+        return JsonResponse({'error': 'Invalid username and/or password'}, status=401)
     
     except Exception as err:
         traceback.print_tb(err.__traceback__)

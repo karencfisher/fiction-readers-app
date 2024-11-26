@@ -1,7 +1,7 @@
 import './PopUp.css';
 
 export function PopUp(props) {
-    const {message, kind, callback, modal} = props;
+    const {message, kind, callback, hasCancelButton, modal} = props;
 
     return (
         <div className={modal ? "mask": "unmask"}>
@@ -15,8 +15,9 @@ export function PopUp(props) {
                     </div>
                     <div className="message" dangerouslySetInnerHTML={{ __html: message }}></div>
                 </div>
-                <div className="buttons">   
+                <div className="buttons">
                     <button onClick={callback}>OK</button>
+                    {hasCancelButton ? <button onClick={callback}>Cancel</button> : <></>}
                 </div>
             </div>
         </div>

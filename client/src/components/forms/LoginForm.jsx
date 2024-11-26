@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PopUp } from '../widgets/PopUp';
+import * as cookie from "cookie";
 import './forms.css';
 
 export function LoginForm() {
@@ -23,12 +24,13 @@ export function LoginForm() {
                 password: password
             }),
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRFToken": cookie.parse(document.cookie).csrftoken
             }
         });
         const response = await result.json();
 
-        if (Object.keys(response)[0] === "error") {
+        if (result.status !== 200) {
             setPopup({...popup, 
                 msg: response.error, 
                 kind:"error",
@@ -72,6 +74,7 @@ export function LoginForm() {
                     message={popup.msg}
                     callback={popUpHandler}
                     modal={true}
+                    hasCancelButton={false}
                 />)}
         </form>
     )
