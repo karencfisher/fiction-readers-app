@@ -5,11 +5,10 @@ import './BookInfo.css';
 
 
 export function BookInfo(props) {
-    const [bookInfo, setBookInfo] = useState({});
     const [popup, setPopup] = useState({open: false});
     const [status, setStatus] = useState("NONE")
     const isChangingShelf = useRef(false);
-    const {book_id, user_id} = props;
+    const {bookInfo, user_id} = props;
     const shelves = {
         READ: "Books I've read",
         READING: "Books I am reading",
@@ -17,24 +16,6 @@ export function BookInfo(props) {
         NONE: "Not on my shelves yet!"
     }
     const popUpOkHandler = () => setPopup({...popup, open: false});
-
-    async function getBookInfo(book_id) {
-        const result = await fetch(`/books/${book_id}/`, {
-            credentials: "same-origin"
-        });
-        const info = await result.json();
-        if (result.status !== 200) {
-            setPopup({...popup, 
-                      msg: info.error, 
-                      kind: "error",
-                      hasCancelButton: false,
-                      handler: popUpOkHandler,
-                      open: true})
-        }
-        else {
-            setBookInfo(info);
-        }
-    }
 
     async function getStatus(user_id, book_id) {
         const result = await fetch(`reader_logs/${user_id}/${book_id}/`, {
@@ -92,7 +73,7 @@ export function BookInfo(props) {
                 credentials: "same-origin",
                 body: JSON.stringify({
                     user: user_id,
-                    book: book_id,
+                    book: bookInfo.id,
                     status: status
                 }),
                 headers: {
@@ -125,11 +106,10 @@ export function BookInfo(props) {
     }, [status])
 
     useEffect(() => {
-        if (book_id && user_id) {
-            getBookInfo(book_id);
-            getStatus(user_id, book_id);
+        if (bookInfo && user_id) {
+            getStatus(user_id, bookInfo.id);
         }
-    }, [book_id, user_id]);
+    }, [bookInfo, user_id]);
 
     return (
         <div className="book-container">

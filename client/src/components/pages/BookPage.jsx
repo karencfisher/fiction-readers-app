@@ -3,15 +3,17 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { BookInfo } from '../forms/BookInfo';
+import { PopUp } from '../widgets/PopUp';
 import './style.css';
 
 export function BookPage({ route }) {
     const [userID, setUserID] = useState(0);
+    const [bookInfo, setBookInfo] = useState({})
+    const [popup, setPopup] = useState({open: false})
     const navigate = useNavigate();
     const location = useLocation()
     const params = location.state;
-
-    console.log(`Book id ${params.book_id}`);
+    const popUpOkHandler = () => setPopup({...popup, open: false});
 
     async function getUserInfo() {
 		const result = await fetch('/registration/whoami', {
@@ -26,8 +28,27 @@ export function BookPage({ route }) {
 		return answer;
 	}
 
+    async function getBookInfo(book_id) {
+        const result = await fetch(`/books/${book_id}/`, {
+            credentials: "same-origin"
+        });
+        const info = await result.json();
+        if (result.status !== 200) {
+            setPopup({...popup, 
+                      msg: info.error, 
+                      kind: "error",
+                      hasCancelButton: false,
+                      handler: popUpOkHandler,
+                      open: true})
+        }
+        else {
+            setBookInfo(info);
+        }
+    }
+
     useEffect(() => {
         getUserInfo();
+        getBookInfo(params.book_id)
     }, []);
 
     return (
@@ -41,13 +62,22 @@ export function BookPage({ route }) {
                     tabLabels={["About", "Reviews", "Similar"]}
                     tabContents={[
                                     <BookInfo 
-                                        book_id={params.book_id}
+                                        bookInfo={bookInfo}
                                         user_id={userID}
                                     />, 
                                     "soon", 
                                     "later"]}
                 />
             </main>
+            {popup.open && (
+                <PopUp
+                    message={popup.msg}
+                    callback={popup.handler}
+                    kind={popup.kind}
+                    modal={true}
+                    hasCancelButton={popup.hasCancelButton}
+                />
+            )}
         </div>
     )
 }
