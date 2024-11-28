@@ -57,7 +57,6 @@ export function BookInfo(props) {
         if (e.target.value === "NONE") {
             const goAhead = new Promise((resolve) => {
                 const OkCancelHandler = (e) => {
-                    console.log("called");
                     const confirmed = e.target.innerText === "OK";
                     setPopup({...popup, open: false});
                     resolve(confirmed); // Resolve the promise with the user's choice
@@ -74,7 +73,6 @@ export function BookInfo(props) {
     
             goAhead.then((confirmed) => {
                 if (!confirmed) {
-                    console.log("aborted");
                     return; // Exit if not confirmed
                 }
                 setStatus(e.target.value); // Only set status if confirmed
@@ -104,7 +102,6 @@ export function BookInfo(props) {
             });
             const response = await result.json();
             if (result.status !== 200) {
-                console.log(response.error);
                 setPopup({...popup, 
                           msg: response.error,
                           kind: "error",
