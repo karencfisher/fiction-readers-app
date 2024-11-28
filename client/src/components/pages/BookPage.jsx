@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { BookInfo } from '../forms/BookInfo';
-
 import './style.css';
 
 export function BookPage({ route }) {
@@ -34,15 +33,19 @@ export function BookPage({ route }) {
     return (
         <div className="main-container">
             <header>
-                <h1 className="page-title">Book</h1>
+                <h1 className="page-title">Book Details</h1>
                 <LogoutButton />
             </header>
             <main>
-                <Tabs
-                    tabLabels={["About", "Review", "Similar"]}
-                    tabContents={[<BookInfo book_id={params.book_id}/>, 
-                                  "soon", 
-                                  "later"]}
+                <Tabs className="book-tabs"
+                    tabLabels={["About", "Reviews", "Similar"]}
+                    tabContents={[
+                                    <BookInfo 
+                                        book_id={params.book_id}
+                                        user_id={userID}
+                                    />, 
+                                    "soon", 
+                                    "later"]}
                 />
             </main>
         </div>

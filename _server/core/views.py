@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import json
 import traceback
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
@@ -126,7 +127,7 @@ def book_id(req, id):
 def book_new(req):
     ''' Add a book by user '''
     try:
-        book_info = req.POST.dict()
+        book_info = json.loads(req.body)
         
         # Genre should be in existing list, but new author and publisher can be added
         book_info['genre'] = Genre.objects.get(genre=book_info['genre'])
@@ -226,8 +227,8 @@ def reader_log_id_book_id(req, user_id, book_id):
     if (req.user.id != user_id):
         return JsonResponse({'Error': 'Denied'}, status=403)
     try:
-        status = ReaderLog.objects.filter(user=user_id, book_id=book_id).values('status')[0]
-        return JsonResponse(status)
+        status = ReaderLog.objects.filter(user=user_id, book_id=book_id).values('status')
+        return JsonResponse({'data': list(status)})
     except Exception as err:
         traceback.print_tb(err.__traceback__)
         print(err)
@@ -237,12 +238,16 @@ def reader_log_id_book_id(req, user_id, book_id):
 def reader_log_update(req):
     ''' Update or create reader log entry '''
     try:
-        log_info = req.POST.dict()
-        if (log_info['uesr_id'] != req.user.id):
+        log_info = json.loads(req.body)
+        if (log_info['user'] != req.user.id):
             return JsonResponse({'error': 'Denied'}, status=403)
-        log_info['user'] = User.objects.get(id=log_info['user_id'])
+        log_info['user'] = User.objects.get(id=log_info['user'])
         log_info['book'] = Book.objects.get(id=log_info['book'])
-        new_log, created = ReaderLog.objects.update_or_create(**log_info)
+        new_log, created = ReaderLog.objects.update_or_create(
+             user=log_info['user'],
+             book=log_info['book'],
+             defaults=log_info                                                 
+        )
         new_log.save()
         action = 'Log entry created' if created else 'Log entry updated'
         return JsonResponse({'sucess': action})

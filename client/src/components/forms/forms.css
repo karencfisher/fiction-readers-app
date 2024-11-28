@@ -14,7 +14,7 @@ form button {
     gap: 5px;
 }
 
-input {
+.field input {
     width: 100%;
     align-self: center;
     flex: 1;

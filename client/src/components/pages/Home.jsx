@@ -57,7 +57,7 @@ export function Home() {
 				else if (book.status === "READING") {
 					readingBooks.push(book);
 				}
-				else {
+				else if (book.status === "TOREAD") {
 					toReadBooks.push(book);
 				}
 			}

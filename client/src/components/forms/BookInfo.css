@@ -1,0 +1,47 @@
+.book-container {
+    min-height: 82vh;
+}
+
+.book-columns {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+}
+
+.book-cover {
+    margin-top: 20px;
+    width: fit-content;
+}
+
+.book-title {
+    font-size: 1.3rem;
+    font-weight: normal;
+}
+
+.book-author {
+    font-size: 1.1rem;
+    font-weight: normal;
+}
+
+.book-synopsis {
+    font-size: .8rem;
+}
+
+.book-option {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.book-option input, .book-option label {
+    margin: 0;
+    padding: 0;
+    width: fit-content;
+}
+
+@media screen and (min-width: 900px) {
+    .book-synopsis {
+        font-size: 1rem;
+    }
+}
