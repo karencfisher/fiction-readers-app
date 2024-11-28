@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { BookInfo } from '../forms/BookInfo';
+import { BookReviews } from '../forms/BookReviews';
 import { PopUp } from '../widgets/PopUp';
 import './style.css';
 
@@ -59,13 +60,16 @@ export function BookPage({ route }) {
             </header>
             <main>
                 <Tabs className="book-tabs"
-                    tabLabels={["About", "Reviews", "Similar"]}
+                    tabLabels={["About", "Reviews", "My Review", "Similar"]}
                     tabContents={[
                                     <BookInfo 
                                         bookInfo={bookInfo}
                                         user_id={userID}
                                     />, 
-                                    "soon", 
+                                    <BookReviews
+                                        bookInfo={bookInfo}
+                                        user_id={userID}
+                                    />, 
                                     "later"]}
                 />
             </main>
