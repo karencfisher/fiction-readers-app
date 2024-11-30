@@ -6,6 +6,7 @@ import { BookInfo } from '../forms/BookInfo';
 import { BookReviews } from '../forms/BookReviews';
 import { PopUp } from '../widgets/PopUp';
 import './style.css';
+import { MyReview } from '../forms/MyReview';
 
 export function BookPage({ route }) {
     const [userID, setUserID] = useState(0);
@@ -56,7 +57,10 @@ export function BookPage({ route }) {
         <div className="main-container">
             <header>
                 <h1 className="page-title">Book Details</h1>
-                <LogoutButton />
+                <div>
+                    <button onClick={() => navigate(-1)}>Back</button>
+                    &nbsp;<LogoutButton />
+                </div>
             </header>
             <main>
                 <Tabs className="book-tabs"
@@ -70,7 +74,11 @@ export function BookPage({ route }) {
                                         bookInfo={bookInfo}
                                         user_id={userID}
                                     />, 
-                                    "later"]}
+                                    <MyReview
+                                        bookInfo={bookInfo}
+                                        user_id={userID}
+                                    />
+                                ]}
                 />
             </main>
             {popup.open && (

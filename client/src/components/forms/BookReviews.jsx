@@ -1,14 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { PopUp } from '../widgets/PopUp';
-import * as cookie from "cookie";
 import './BookInfo.css';
 
 export function BookReviews(props) {
-    const [popup, setPopup] = useState({open: false});
     const [reviewIndex, setReviewIndex] = useState(0);
     const [reviewCount, setReviewCount] = useState(0);
     const {bookInfo, user_id} = props;
-    const popUpOkHandler = () => setPopup({...popup, open: false});
 
     function reviewNavigate(e) {
         if (e.target.id === "back" && reviewIndex > 0) 
@@ -42,8 +39,7 @@ export function BookReviews(props) {
             <hr />
             <div>
                 <div className="review-nav">
-                    <div><h2>Member review {reviewIndex + 1} 
-                        &nbsp;(of {reviewCount} {reviewCount > 1? 'reviews': 'review'})</h2></div>
+                    <div><h2>Member review {reviewIndex + 1}&nbsp;(of {reviewCount})</h2></div>
                     <div>
                         {reviewIndex > 0?
                             <span 
@@ -61,29 +57,20 @@ export function BookReviews(props) {
                         }
                     </div>
                 </div>
-                {bookInfo.reviews?
-                    <div className="review-container">
-                        <div className="review-rating">
-                            Rating: {bookInfo.reviews[reviewIndex].rating}
-                        </div>
-                        <div className="review-user">
-                            <i>Review submitted by {bookInfo.reviews[reviewIndex].user__username}</i>
-                        </div>
-                        <div className="review-text">
-                            {bookInfo.reviews[reviewIndex].review}
-                        </div> 
-                    </div>: <div>Loading... </div>
-                }
+                    {bookInfo.reviews?
+                        <div className="review-container">
+                            <div className="review-rating">
+                                Rating: {bookInfo.reviews[reviewIndex].rating}
+                            </div>
+                            <div className="review-user">
+                                <i>Review submitted by {bookInfo.reviews[reviewIndex].user__username}</i>
+                            </div>
+                            <div className="review-text">
+                                {bookInfo.reviews[reviewIndex].review}
+                            </div> 
+                        </div>: <div>No reviews yet!</div>
+                    }
             </div>
-            {popup.open && (
-            <PopUp
-                message={popup.msg}
-                callback={popup.handler}
-                kind={popup.kind}
-                modal={true}
-                hasCancelButton={popup.hasCancelButton}
-            />
-        )}
         </div>
     )
 }

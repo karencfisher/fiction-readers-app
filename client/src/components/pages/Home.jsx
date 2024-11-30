@@ -71,8 +71,11 @@ export function Home() {
 	return (
 		<div className="main-container">
 			<header>
-				<h1 className="page-title">{userName}'s Bookshelves</h1>
-				<LogoutButton />
+				<h1 className="page-title">Your Bookshelves</h1>
+				<div>
+					<button>Search</button>&nbsp;
+					<LogoutButton />
+				</div>
 			</header>
 			<main>
 				
@@ -94,12 +97,6 @@ export function Home() {
 					books={booksToRead}
 					onclick = {getSelectedBook}
 				/>
-			
-				<Tabs
-					tabLabels={["Book Search"]}
-					tabContents={['<i>Coming soon!</i>']}
-				/>
-				
 			</main>
 		</div>
   	)

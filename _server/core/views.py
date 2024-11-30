@@ -147,10 +147,10 @@ def book_new(req):
         return JsonResponse({'error': 'Server error'}, status=500)
 
 @login_required
-def review_id(req, id):
+def review_id(req, user_id, book_id):
     ''' Get review by id, including user name, author, and title '''
     try:
-        review = Review.objects.filter(id=id).select_related('book__author', 'user')\
+        review = Review.objects.filter(book=book_id, user=user_id).select_related('book__author', 'user')\
             .annotate(username=F('user__username'), 
                 author = F('book__author__author_name'),
                 title = F('book__title')
@@ -161,9 +161,8 @@ def review_id(req, id):
                 'title',
                 'review',
                 'rating'
-            )[0]
-        
-        return JsonResponse(review)
+            )
+        return JsonResponse({'data': list(review)})
     
     except IndexError:
         return JsonResponse({'error': f"Review with id '{id}' not found"}, status=404)
@@ -176,12 +175,17 @@ def review_id(req, id):
 def review_update(req):
     ''' Create or update a review '''
     try:
-        review_info = req.POST.dict()
-        if (review_info['user_id'] != req.user.id):
+        review_info = json.loads(req.body)
+        if (review_info['user'] != req.user.id):
             return JsonResponse({'error': 'Denied'}, status=403)
-        review_info['user'] = User.objects.get(id=review_info['user_id'])
+        review_info['user'] = User.objects.get(id=review_info['user'])
         review_info['book'] = Book.objects.get(id=review_info['book'])
-        new_review, created = Review.objects.update_or_create(**review_info)
+        review_info['rating'] = int(review_info['rating'])
+        new_review, created = Review.objects.update_or_create(
+             user=review_info['user'],
+             book=review_info['book'],
+             defaults=review_info                                                 
+        )
         new_review.save()
         action = 'Review created' if created else 'Review updated'
         return JsonResponse({'success': action})

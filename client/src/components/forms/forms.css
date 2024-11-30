@@ -1,4 +1,4 @@
-form {
+form, fieldset {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -6,6 +6,14 @@ form {
 
 form button {
     width: fit-content;
+    align-self: flex-end;
+}
+
+
+
+textarea {
+    width: 100%;
+    resize: vertical;
 }
 
 .field {

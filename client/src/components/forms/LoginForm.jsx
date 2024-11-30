@@ -75,7 +75,8 @@ export function LoginForm() {
                     callback={popUpHandler}
                     modal={true}
                     hasCancelButton={false}
-                />)}
+                />)
+            }
         </form>
     )
 }
