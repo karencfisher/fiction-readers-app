@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
+import * as cookie from "cookie";
 import { useNavigate } from 'react-router-dom';
 import { BookShelf } from '../widgets/BookShelf';
-import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import './style.css';
 
@@ -11,6 +11,7 @@ export function Home() {
 	const [booksRead, setBooksRead] = useState([]);
 	const [booksReading, setBooksReading] = useState([]);
 	const [booksToRead, setBooksToRead] = useState([]);
+	const [updateTrigger, setUpdateTrigger] = useState(0);
 	const navigate = useNavigate();
 
 	async function getUserInfo() {
@@ -39,6 +40,38 @@ export function Home() {
 		navigate("/book_page", {state: {book_id: e.target.id}})
 	}
 
+	async function changeShelf(user_id, book_id, shelf_id) {
+		const result = await fetch('/reader_logs/update/', {
+			method: "post",
+			credentials: "same-origin",
+			body: JSON.stringify({
+				user: user_id,
+				book: book_id,
+				status: shelf_id
+			}),
+			headers: {
+				"Content-Type": "application/json",
+				"X-CSRFToken": cookie.parse(document.cookie).csrftoken
+			}
+		});
+		const response = await result.json();
+		if (result.status !== 200) {
+			setPopup({...popup, 
+					  msg: response.error,
+					  kind: "error",
+					  hasCancelButton: false,
+					  handler: popUpOkHandler,
+					  open: true})
+		}
+	}
+
+	async function handleDrop(book_id, shelf_id){
+		// Logic to update the book's status or shelf based on the bookId
+		await changeShelf(userID, book_id, shelf_id);
+		setUpdateTrigger(prev => prev + 1);
+		// You can update your state here to reflect the change
+	};
+
 	useEffect(() => {
 		getUserInfo();
 	}, []);
@@ -66,7 +99,7 @@ export function Home() {
 			setBooksToRead(toReadBooks);
 		};
 		fetchBooks();
-	}, [userID]);
+	}, [userID, updateTrigger]);
 
 	return (
 		<div className="main-container">
@@ -84,18 +117,24 @@ export function Home() {
 					title="Books I've read"
 					books={booksRead}
 					onclick = {getSelectedBook}
+					onDrop={handleDrop}
+					shelfId="READ"
 				/>
 				<BookShelf
 					kind="clickable"
 					title="Books I am reading"
 					books={booksReading}
 					onclick = {getSelectedBook}
+					onDrop={handleDrop}
+					shelfId="READING"
 				/>
 				<BookShelf
 					kind="clickable"
 					title="Books I plan to read"
 					books={booksToRead}
 					onclick = {getSelectedBook}
+					onDrop={handleDrop}
+					shelfId="TOREAD"
 				/>
 			</main>
 		</div>
