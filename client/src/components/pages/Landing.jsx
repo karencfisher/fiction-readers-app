@@ -67,7 +67,7 @@ export function Landing(props) {
                         </p>
                     </div>
                     <div className="registration">
-                        <Tabs 
+                        <Tabs
                             tabLabels={["Login", "Join"]}
                             tabContents={[<LoginForm/>, <RegisterForm/>]}
                         />

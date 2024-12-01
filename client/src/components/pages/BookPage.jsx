@@ -52,14 +52,9 @@ export function BookPage({ route }) {
     useEffect(() => {
         if (params && params.book_id) {
             getUserInfo();
-            getBookInfo(params.book_id); // Fetch book info using the passed book_id
+            getBookInfo(params.book_id);
         }
     }, [params]);
-
-    // useEffect(() => {
-    //     getUserInfo();
-    //     getBookInfo(params.book_id)
-    // }, []);
 
     return (
         <div className="main-container">

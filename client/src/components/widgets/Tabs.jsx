@@ -1,14 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import './Tabs.css';
 
 export function Tabs(props) {
     const [currentTab, setCurrentTab] = useState(0);
     const {tabLabels, tabContents} = props;
+    const currentContent = useRef(tabContents);
 
     function changeTab(e) {
         const label = e.target.innerText;
         setCurrentTab(tabLabels.indexOf(label));
     }
+
+    useEffect(() => {
+        if (tabContents !== currentContent.current) {
+            setCurrentTab(0);
+        }
+    }, [tabContents])
 
     return (
         <div className="tab-container">
