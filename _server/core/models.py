@@ -33,7 +33,11 @@ class Book(models.Model):
             'rating'
         )
         
+class BookIndex(models.Model):
+    book_id = models.IntegerField(unique=True)
+    embedding = models.JSONField()
     
+       
 class Author(models.Model):
     id = models.BigAutoField(primary_key=True)
     author_name= models.TextField(unique=True, blank=False)

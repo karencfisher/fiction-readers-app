@@ -4,6 +4,7 @@ import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { BookInfo } from '../forms/BookInfo';
 import { BookReviews } from '../forms/BookReviews';
+import { BookSimilar } from '../forms/BookSimilar';
 import { PopUp } from '../widgets/PopUp';
 import './style.css';
 import { MyReview } from '../forms/MyReview';
@@ -49,9 +50,16 @@ export function BookPage({ route }) {
     }
 
     useEffect(() => {
-        getUserInfo();
-        getBookInfo(params.book_id)
-    }, []);
+        if (params && params.book_id) {
+            getUserInfo();
+            getBookInfo(params.book_id); // Fetch book info using the passed book_id
+        }
+    }, [params]);
+
+    // useEffect(() => {
+    //     getUserInfo();
+    //     getBookInfo(params.book_id)
+    // }, []);
 
     return (
         <div className="main-container">
@@ -75,6 +83,10 @@ export function BookPage({ route }) {
                                         user_id={userID}
                                     />, 
                                     <MyReview
+                                        bookInfo={bookInfo}
+                                        user_id={userID}
+                                    />,
+                                    <BookSimilar
                                         bookInfo={bookInfo}
                                         user_id={userID}
                                     />

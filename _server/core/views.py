@@ -10,6 +10,7 @@ from django.conf import settings
 from django.db.utils import IntegrityError
 from django.db.models import F
 from django.contrib.auth.decorators import login_required
+from .vector_search import VectorSearch
 from .models import *
 
 # Load manifest when server launches
@@ -77,10 +78,9 @@ def books_search(req):
         elif method == 'publisher':
             collection = Book.objects.filter(publisher__publisher_name=query)\
                 .values('id', 'title', 'cover_link')
-        elif method == 'title':
-            pass
-        elif method == 'synopsis':
-            pass
+        elif method == 'similarity':
+            vector_search = VectorSearch(n_results=10)
+            collection = vector_search.search_similar(int(query))
         else:
             raise KeyError(f'No such query method: {query}')
         if not collection:

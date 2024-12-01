@@ -29,6 +29,9 @@ export function BookInfo(props) {
                 handler: popUpOkHandler,
                 msg: info.error, open: true})
         }
+        else if (info.data.length === 0) {
+            setStatus("NONE");
+        }
         else {
             setStatus(info.data[0].status);
         }

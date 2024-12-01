@@ -57,7 +57,7 @@ export function BookReviews(props) {
                         }
                     </div>
                 </div>
-                    {bookInfo.reviews?
+                    {bookInfo.reviews && bookInfo.reviews.length > 0 ?
                         <div className="review-container">
                             <div className="review-rating">
                                 Rating: {bookInfo.reviews[reviewIndex].rating}

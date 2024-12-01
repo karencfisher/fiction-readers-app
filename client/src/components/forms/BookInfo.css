@@ -40,6 +40,17 @@
     width: fit-content;
 }
 
+.book-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.book-cover {
+    cursor: pointer;
+}
+
 .review-container {
     display: flex;
     flex-direction: column;

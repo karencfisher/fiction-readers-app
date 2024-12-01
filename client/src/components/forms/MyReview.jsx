@@ -13,6 +13,7 @@ export function MyReview(props) {
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
     async function getReview(user_id, book_id) {
+       console.log(user_id, book_id);
         const result = await fetch(`/reviews/${user_id}/${book_id}`, {
             credentials: "same-origin"
         });
@@ -77,7 +78,10 @@ export function MyReview(props) {
     }, [bookInfo, user_id])
 
     useEffect(() => {
+        setReviewRating(5);
+        setReviewText("");
         if (review && review.length > 0) {
+            console.log(review);
             setReviewRating(review[0].rating);
             setReviewText(review[0].review);
         }
