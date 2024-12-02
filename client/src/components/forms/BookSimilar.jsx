@@ -7,7 +7,7 @@ import './BookInfo.css';
 export function BookSimilar(props) {
     const [books, setBooks] = useState([]);
     const [popup, setPopup] = useState({open: false});
-    const {bookInfo, user_id} = props;
+    const {bookInfo, user_id, setBackCount} = props;
     const navigate = useNavigate();
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
@@ -30,7 +30,7 @@ export function BookSimilar(props) {
     }
 
     function getSelectedBook(e) {
-        console.log(`Navigate to book ${e.target.id}`)
+        setBackCount(0);
 		navigate("/book_page", {state: {book_id: e.target.id}})
 	} 
 
@@ -54,6 +54,7 @@ export function BookSimilar(props) {
                 </div>
             </div>
             <hr />
+            <h2>Similar books</h2>
             <div className="book-grid">
             {books.length === 0? (
                     <div className="placeholder">

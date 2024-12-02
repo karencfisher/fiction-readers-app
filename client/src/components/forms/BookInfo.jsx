@@ -49,7 +49,7 @@ export function BookInfo(props) {
                     ...popup,
                     hasCancelButton: true,
                     handler: OkCancelHandler,
-                    kind: "info",
+                    kind: "error",
                     msg: `Are you sure you want to remove <b>${bookInfo.title}</b> from your shelves?`,
                     open: true
                 });

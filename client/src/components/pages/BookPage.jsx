@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
@@ -6,15 +6,21 @@ import { BookInfo } from '../forms/BookInfo';
 import { BookReviews } from '../forms/BookReviews';
 import { BookSimilar } from '../forms/BookSimilar';
 import { PopUp } from '../widgets/PopUp';
-import './style.css';
 import { MyReview } from '../forms/MyReview';
+import homeImg from '../images/home.png';
+import './style.css';
 
 export function BookPage({ route }) {
     const [userID, setUserID] = useState(0);
     const [bookInfo, setBookInfo] = useState({})
     const [popup, setPopup] = useState({open: false})
+    const [breadCrumbs, setBreadCrumbs] = useState([
+        {title: 'Home', cover_link: homeImg}
+    ])
+    const [backCount, setBackCount] = useState(0);
     const navigate = useNavigate();
     const location = useLocation()
+    const prevLocation = useRef(location);
     const params = location.state;
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
@@ -49,6 +55,12 @@ export function BookPage({ route }) {
         }
     }
 
+    function goBack(e) {
+        const increment = e.target.id - breadCrumbs.length;
+        setBackCount(Math.abs(increment));
+        navigate(increment);
+    }
+
     useEffect(() => {
         if (params && params.book_id) {
             getUserInfo();
@@ -56,16 +68,43 @@ export function BookPage({ route }) {
         }
     }, [params]);
 
+    useEffect(() => {
+        if (location !== prevLocation.current) {
+            if (backCount > 0) {
+                setBreadCrumbs((prev) => prev.slice(0, prev.length - backCount));
+            }
+            else {
+                const newCrumb = {
+                    title: bookInfo.title,
+                    cover_link: bookInfo.cover_link
+                };
+                setBreadCrumbs([...breadCrumbs, newCrumb]);
+            }
+            prevLocation.current = location;
+        }
+    }, [location, backCount])
+
     return (
         <div className="main-container">
             <header>
                 <h1 className="page-title">Book Details</h1>
                 <div>
-                    <button onClick={() => navigate(-1)}>Back</button>
                     &nbsp;<LogoutButton />
                 </div>
             </header>
             <main>
+                <fieldset className="crumb">
+                    <legend>Previous pages</legend>
+                    <nav>
+                        {breadCrumbs.map((crumb, i) => (
+                            <span key={i}>
+                                {i > 0 && " "}
+                                <img src={crumb.cover_link} alt={crumb.title} id={i} 
+                                    onClick={goBack}/>
+                            </span>
+                        ))}
+                    </nav>
+                </fieldset>
                 <Tabs className="book-tabs"
                     tabLabels={["About", "Reviews", "My Review", "Similar"]}
                     tabContents={[
@@ -84,6 +123,7 @@ export function BookPage({ route }) {
                                     <BookSimilar
                                         bookInfo={bookInfo}
                                         user_id={userID}
+                                        setBackCount={setBackCount}
                                     />
                                 ]}
                 />

@@ -37,7 +37,7 @@
     background-color: #bbb;
     margin: 0;
     display: none;
-    width: 98%;
+    width: 94%;
     padding: 10px;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -46,5 +46,17 @@
 
 .tab-content[data-open="true"] {
     display: block;
+}
+
+@media screen and (min-width: 768px) {
+    .tab-content {
+        width: 97%;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .tab-content {
+        width: 97.5%;
+    }
 }
 

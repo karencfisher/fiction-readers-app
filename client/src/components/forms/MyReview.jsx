@@ -101,7 +101,7 @@ export function MyReview(props) {
             </div>
             <hr />
             <form onSubmit={updateReview} method="post">
-                <fieldset>
+                
                     <legend>Your review</legend>
                     <div className="field">
                         <label htmlFor="rating">Rating</label>
@@ -115,7 +115,7 @@ export function MyReview(props) {
                             onChange={(e) => setReviewText(e.target.value)} />
                     </div>
                     <button>Submit review</button>
-                </fieldset>
+                
             </form>
             {popup.open && 
                 (<PopUp  
