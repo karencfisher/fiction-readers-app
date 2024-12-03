@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { useDrop } from 'react-dnd';
 import { Book } from './Book';
 import './BookShelf.css';
@@ -9,7 +8,7 @@ export function BookShelf(props) {
     const [{ isOver }, drop] = useDrop({
         accept: 'BOOK',
         drop: (item) => {
-            onDrop(item.id, shelfId); // Call the drop handler with the book ID
+            onDrop(item.id, shelfId);
         },
         collect: (monitor) => ({
             isOver: monitor.isOver(),

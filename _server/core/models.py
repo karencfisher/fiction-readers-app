@@ -36,6 +36,7 @@ class Book(models.Model):
 class BookIndex(models.Model):
     book_id = models.IntegerField(unique=True)
     embedding = models.JSONField()
+    genre = models.ForeignKey('Genre', on_delete=models.CASCADE, null=True)
     
        
 class Author(models.Model):

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
-from core.models import Book, BookIndex
+from core.models import Book, BookIndex, Genre
 from tqdm import tqdm
 from sentence_transformers import SentenceTransformer
 
@@ -15,7 +15,7 @@ class Command(BaseCommand):
             return
         
         # fetch all the books
-        books = list(Book.objects.all().values('id', 'title', 'synopsis'))
+        books = list(Book.objects.all().values('id', 'title', 'synopsis', 'genre'))
         
         # embed titles and synopsis and store in BookIndex
         model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -23,7 +23,11 @@ class Command(BaseCommand):
         print("Embedding book information...")
         for book_data in tqdm(books):
             embedding = model.encode(f"{book_data['title']} {book_data['synopsis']}")
-            book = BookIndex(book_id=book_data['id'], embedding=embedding.tolist())
+            book = BookIndex(
+                book_id=book_data['id'], 
+                embedding=embedding.tolist(), 
+                genre=Genre.objects.get(id=int(book_data['genre']))
+            )
             book.save()
         print("Done!")
             

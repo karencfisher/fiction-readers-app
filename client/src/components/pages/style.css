@@ -79,10 +79,11 @@ h2 {
 .crumb {
     width: 92%;
     margin: 0;
+    background-color:rgb(221, 221, 221)
 }
 
 .crumb img {
-    height: 25px;
+    height: 30px;
     cursor: pointer;
 }
 

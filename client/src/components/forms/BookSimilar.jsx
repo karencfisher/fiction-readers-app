@@ -12,7 +12,8 @@ export function BookSimilar(props) {
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
     async function getSimilar() {
-        const result = await fetch(`/books/search?method=similarity&query=${bookInfo.id}`, {
+        const result = await fetch(
+            `/books/search?method=similarity&query=${bookInfo.id}&genre=${bookInfo.genre_name}`, {
             credentials: "same-origin"
         });
         const info = await result.json();

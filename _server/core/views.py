@@ -79,7 +79,8 @@ def books_search(req):
             collection = Book.objects.filter(publisher__publisher_name=query)\
                 .values('id', 'title', 'cover_link')
         elif method == 'similarity':
-            vector_search = VectorSearch(n_results=10)
+            genre = req.GET.get('genre')
+            vector_search = VectorSearch(n_results=12, genre_name=genre)
             collection = vector_search.search_similar(int(query))
         else:
             raise KeyError(f'No such query method: {query}')
