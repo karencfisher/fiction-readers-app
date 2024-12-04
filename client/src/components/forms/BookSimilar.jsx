@@ -1,10 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PopUp } from "../widgets/PopUp";
-import './BookInfo.css'; 
+import { BookGrid } from "../widgets/BookGrid";
+import '../forms/BookInfo.css'; 
 
 
 export function BookSimilar(props) {
+    const [countPages, setCountPages] = useState (0);
+    const [currentPage, setCurrentPage] = useState(1);
     const [books, setBooks] = useState([]);
     const [popup, setPopup] = useState({open: false});
     const {bookInfo, user_id, setBackCount} = props;
@@ -13,20 +16,23 @@ export function BookSimilar(props) {
 
     async function getSimilar() {
         const result = await fetch(
-            `/books/search?method=similarity&query=${bookInfo.id}&genre=${bookInfo.genre_name}`, {
+            `/books/search?method=similarity&query=${bookInfo.id}&genre=${bookInfo.genre_name}&page=${currentPage}`, {
             credentials: "same-origin"
         });
-        const info = await result.json();
+        const response = await result.json();
         if (result.status !== 200) {
             setPopup({...popup, 
-                      msg: info.error, 
+                      msg: response.error, 
                       kind: "error",
                       hasCancelButton: false,
                       handler: popUpOkHandler,
                       open: true})
         }
         else {
-            setBooks(info.data);
+            console.log()
+            setBooks(response.data);
+            setCurrentPage(parseInt(response.page));
+            setCountPages(parseInt(response.num_pages));
         }
     }
 
@@ -40,6 +46,12 @@ export function BookSimilar(props) {
             getSimilar();
         }
     }, [bookInfo])
+
+    useEffect(() => {
+        if (countPages > 0) {
+            getSimilar();
+        }
+    }, [currentPage])
 
     return (
         <div className="book-container">
@@ -55,19 +67,13 @@ export function BookSimilar(props) {
                 </div>
             </div>
             <hr />
-            <h2>Similar books</h2>
-            <div className="book-grid">
-            {books.length === 0? (
-                    <div className="placeholder">
-                        No books found
-                    </div>
-                ) : (
-                    books.map((book, i) => (
-                        <img className="book-cover" key={i} src={book.cover_link} alt={book.title} 
-                            id={book.id} onClick={getSelectedBook} />
-                    ))
-                )}
-            </div>
+            <BookGrid 
+                books={books}
+                getSelectedBook={getSelectedBook}
+                countPages={countPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+            />
             {popup.open && (
                 <PopUp
                     message={popup.msg}

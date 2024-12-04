@@ -104,20 +104,20 @@ def books_search(req):
         method = req.GET['method']
         query = req.GET['query']
         if method == 'author':
-            collection = Book.objects.filter(author__author_name=query)\
+            collection = Book.objects.filter(author__author_name__istartswith=query)\
                 .values('id', 'title', 'cover_link')
         elif method == 'genre':
             collection = Book.objects.filter(genre__genre=query)\
                 .values('id', 'title', 'cover_link')
         elif method == 'title':
-            collection = Book.objects.filter(title=query)\
+            collection = Book.objects.filter(title__istartswith=query)\
                 .values('id', 'title', 'cover_link')
         elif method == 'similarity':
             genre = req.GET.get('genre')
             countBooks = Book.objects.filter(genre__genre=genre).count()
-            if countBooks < 13:
+            if countBooks < 37:
                 genre=None
-            vector_search = VectorSearch(n_results=13, genre_name=genre)
+            vector_search = VectorSearch(n_results=37, genre_name=genre)
             collection = vector_search.search_similar(int(query))
         else:
             raise KeyError(f'No such query method: {query}')

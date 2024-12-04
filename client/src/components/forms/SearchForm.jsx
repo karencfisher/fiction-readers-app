@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { PopUp } from '../widgets/PopUp';
 import { useNavigate } from 'react-router-dom';
+import { BookGrid } from '../widgets/BookGrid';
 import './forms.css';
-import './BookInfo.css';
+import '../forms/BookInfo.css';
 
 export function SearchForm(props) {
-    const [countPages, setCountPages] = useState(0);
+    const [countPages, setCountPages] = useState (0);
     const [currentPage, setCurrentPage] = useState(1);
     const [query, setQuery] = useState("");
     const [genres, setGenres] = useState([]);
@@ -44,12 +45,13 @@ export function SearchForm(props) {
         });
         const response = await result.json();
         if (result.status !== 200) {
-            setPopup({...popup, 
-                      msg: response.error, 
-                      kind: "error",
-                      hasCancelButton: false,
-                      handler: popUpOkHandler,
-                      open: true});
+            setPopup({
+                ...popup, 
+                msg: response.error, 
+                kind: "error",
+                hasCancelButton: false,
+                handler: popUpOkHandler,
+                open: true});
         }
         else {
             setGenres(response.data);
@@ -75,28 +77,16 @@ export function SearchForm(props) {
         }
     }
 
-    function doSearch(e) {
-        e.preventDefault();
-        getData();
-    }
-
     function getSelectedBook(e) {
 		navigate("/book_page", {state: {book_id: e.target.id}})
 	} 
-
-    function pageNavigate(e) {
-        if (e.target.id === "back" && currentPage > 1) {
-            setCurrentPage(currentPage - 1);
-        }
-        else if (e.target.id === "forward" && currentPage < countPages) {
-            setCurrentPage(currentPage + 1);
-        }
-    }
 
     useEffect(() => {
         if (searchType !== "genre") {
             getHints();
         }
+        setCurrentPage(1)
+        getData();
     }, [query])
 
     useEffect(() => {
@@ -112,7 +102,7 @@ export function SearchForm(props) {
     return (
         <div className="book-container">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
-            <form onSubmit={doSearch} method="get">
+            <form>
                 <fieldset>
                     <legend>Search {searchType}</legend>
                     {searchType === "genre"? (
@@ -139,32 +129,15 @@ export function SearchForm(props) {
                             </div>
                         )
                     }
-                    <button>Search</button>
                 </fieldset>
             </form>
-            {countPages > 0 ? (
-                <nav className="page-nav">
-                    <span 
-                        className="material-icons-outlined"
-                        id="back"
-                        onClick={pageNavigate}
-                    >arrow_back_ios</span>
-                    Page {currentPage} of {countPages}
-                    <span 
-                        className="material-icons-outlined"
-                        id="forward"
-                        onClick={pageNavigate}
-                    >arrow_forward_ios</span>
-                </nav>
-            ) : (
-                <></>
-            )}
-            <div className="book-grid">
-                {books.map((book, i) => (
-                    <img className="book-cover" key={i} src={book.cover_link} alt={book.title} 
-                        id={book.id} onClick={getSelectedBook} />
-                ))}
-            </div>
+            <BookGrid
+                books={books}
+                getSelectedBook={getSelectedBook}
+                countPages={countPages}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+            />
             {popup.open && (
                 <PopUp
                     message={popup.msg}
