@@ -3,7 +3,8 @@ import os
 import random
 import json
 import traceback
-from django.forms.models import model_to_dict
+from math import ceil
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
@@ -62,7 +63,40 @@ def books_genre_samples(req):
         return JsonResponse({'error': 'Server error'}, status=500)
 
 
-### Routes requiring authentication ###    
+### Routes requiring authentication ### 
+@login_required
+def genres(req):
+    try:
+        result = Genre.objects.all().values('genre')
+        genres = [item['genre'] for item in result]
+        return JsonResponse({'data': genres})
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+    
+@login_required
+def completions(req):
+    try:
+        field = req.GET['field']
+        query = req.GET['query']
+        if field == 'title':
+            suggestions = Book.objects.filter(title__istartswith=query)\
+                .annotate(suggestion = F('title'))\
+                .values('suggestion')[:5]
+        elif field == 'author':
+            suggestions = Author.objects.filter(author_name__istartswith=query)\
+                .annotate(suggestion = F('author_name'))\
+                .values('suggestion')[:5]
+        return JsonResponse({'data': list(suggestions)})
+    
+    except KeyError:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+   
 @login_required
 def books_search(req):
     ''' Search books by criteria '''
@@ -75,18 +109,28 @@ def books_search(req):
         elif method == 'genre':
             collection = Book.objects.filter(genre__genre=query)\
                 .values('id', 'title', 'cover_link')
-        elif method == 'publisher':
-            collection = Book.objects.filter(publisher__publisher_name=query)\
+        elif method == 'title':
+            collection = Book.objects.filter(title=query)\
                 .values('id', 'title', 'cover_link')
         elif method == 'similarity':
             genre = req.GET.get('genre')
-            vector_search = VectorSearch(n_results=12, genre_name=genre)
+            countBooks = Book.objects.filter(genre__genre=genre).count()
+            if countBooks < 13:
+                genre=None
+            vector_search = VectorSearch(n_results=13, genre_name=genre)
             collection = vector_search.search_similar(int(query))
         else:
             raise KeyError(f'No such query method: {query}')
         if not collection:
             return JsonResponse({'error': f"No data found for '{method}: {query}'"}, status=404)
-        return JsonResponse({'data': list(collection)})
+        
+        num_pages = ceil(len(collection) / 12)
+        paginator = Paginator(collection, 12)
+        page_number = req.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return JsonResponse({'data': list(page_obj), 
+                             'page': page_number, 
+                             'num_pages': num_pages})
     
     except Exception as err:
         traceback.print_tb(err.__traceback__)

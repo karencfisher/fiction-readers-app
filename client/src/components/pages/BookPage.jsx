@@ -108,24 +108,24 @@ export function BookPage({ route }) {
                 <Tabs className="book-tabs"
                     tabLabels={["About", "Reviews", "My Review", "Similar"]}
                     tabContents={[
-                                    <BookInfo 
-                                        bookInfo={bookInfo}
-                                        user_id={userID}
-                                    />, 
-                                    <BookReviews
-                                        bookInfo={bookInfo}
-                                        user_id={userID}
-                                    />, 
-                                    <MyReview
-                                        bookInfo={bookInfo}
-                                        user_id={userID}
-                                    />,
-                                    <BookSimilar
-                                        bookInfo={bookInfo}
-                                        user_id={userID}
-                                        setBackCount={setBackCount}
-                                    />
-                                ]}
+                        <BookInfo 
+                            bookInfo={bookInfo}
+                            user_id={userID}
+                        />, 
+                        <BookReviews
+                            bookInfo={bookInfo}
+                            user_id={userID}
+                        />, 
+                        <MyReview
+                            bookInfo={bookInfo}
+                            user_id={userID}
+                        />,
+                        <BookSimilar
+                            bookInfo={bookInfo}
+                            user_id={userID}
+                            setBackCount={setBackCount}
+                        />
+                    ]}
                 />
             </main>
             {popup.open && (

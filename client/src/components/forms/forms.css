@@ -9,7 +9,9 @@ form button {
     align-self: flex-end;
 }
 
-
+select {
+    width: 100%;
+}
 
 textarea {
     width: 100%;

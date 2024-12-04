@@ -8,6 +8,7 @@ import App from './App.jsx'
 import { Home } from "./components/pages/Home.jsx"
 import { Landing } from "./components/pages/Landing.jsx"
 import { BookPage } from './components/pages/BookPage.jsx';
+import { Search } from './components/pages/Search.jsx';
 
 const router = createHashRouter([
 	{
@@ -25,6 +26,10 @@ const router = createHashRouter([
 			{
 				path: "/book_page",
 				element: <BookPage />
+			},
+			{
+				path: "/search",
+				element: <Search />
 			}
 		]
 	},

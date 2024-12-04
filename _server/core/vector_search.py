@@ -5,7 +5,7 @@ from .models import Book, BookIndex, Genre
 
 class VectorSearch:
     def __init__(self, n_results, genre_name=None):
-        self.knn = NearestNeighbors(n_neighbors=n_results+1, metric='cosine')
+        self.knn = NearestNeighbors(n_neighbors=n_results, metric='cosine')
         if genre_name is None:
             self.book_index = list(BookIndex.objects.all().values('book_id', 'embedding'))
         else:
@@ -17,7 +17,7 @@ class VectorSearch:
     def search_similar(self, book_id):
         book = BookIndex.objects.filter(book_id=book_id).values('embedding')[0]
         embedding = book['embedding']
-        distances, indices = self.knn.kneighbors([embedding])
+        _, indices = self.knn.kneighbors([embedding])
         
         similar_books = []
         for index in indices[0]:

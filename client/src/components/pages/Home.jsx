@@ -65,6 +65,10 @@ export function Home() {
 		}
 	}
 
+	function onSearchClick() {
+		navigate("/Search");
+	}
+
 	async function handleDrop(book_id, shelf_id){
 		// Logic to update the book's status or shelf based on the bookId
 		await changeShelf(userID, book_id, shelf_id);
@@ -106,7 +110,7 @@ export function Home() {
 			<header>
 				<h1 className="page-title">Your Bookshelves</h1>
 				<div>
-					<button>Search</button>&nbsp;
+					<button onClick={onSearchClick}>Search</button>&nbsp;
 					<LogoutButton />
 				</div>
 			</header>
@@ -116,24 +120,27 @@ export function Home() {
 					kind="clickable"
 					title="Books I've read"
 					books={booksRead}
-					onclick = {getSelectedBook}
+					onBookClick = {getSelectedBook}
 					onDrop={handleDrop}
+					onSearchClick={onSearchClick}
 					shelfId="READ"
 				/>
 				<BookShelf
 					kind="clickable"
 					title="Books I am reading"
 					books={booksReading}
-					onclick = {getSelectedBook}
+					onBookClick = {getSelectedBook}
 					onDrop={handleDrop}
+					onSearchClick={onSearchClick}
 					shelfId="READING"
 				/>
 				<BookShelf
 					kind="clickable"
 					title="Books I plan to read"
 					books={booksToRead}
-					onclick = {getSelectedBook}
+					onBookClick = {getSelectedBook}
 					onDrop={handleDrop}
+					onSearchClick={onSearchClick}
 					shelfId="TOREAD"
 				/>
 			</main>
