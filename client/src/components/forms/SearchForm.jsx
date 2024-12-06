@@ -82,6 +82,9 @@ export function SearchForm(props) {
         if (searchType === "genre") {
             getGenres();
         }
+        else if (searchType === "members") {
+            getShelves();
+        }
     }, [searchType])
 
     useEffect(() => {

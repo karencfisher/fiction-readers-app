@@ -37,9 +37,17 @@ def index(req):
 def books_reader_logs(req):
     ''' Get random sample of books for reader_logs (for landing page) '''
     try:
+        page = req.GET.get('page')
         results = Book.objects.filter(reader_log__isnull=False)\
-            .distinct().annotate(book_id = F('id')).values('book_id', 'title', 'cover_link')
+            .distinct().values('id', 'title', 'cover_link')
         random_books = random.sample(list(results), 20)
+        if page is not None:
+            num_pages = ceil(len(random_books) / 12)
+            paginator = Paginator(random_books, 12)
+            page_obj = paginator.get_page(page)
+            return JsonResponse({'data': list(page_obj), 
+                                 'page': page,
+                                 'num_pages': num_pages})
         return JsonResponse({'data': random_books})
             
     except Exception as err:

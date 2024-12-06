@@ -4,6 +4,7 @@ import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { SearchForm } from '../forms/SearchForm';
 import { BookAdd } from '../forms/BookAdd';
+import { MemberBooks } from '../forms/MemberBooks';
 import './style.css';
 
 export function Search(props) {
@@ -38,8 +39,10 @@ export function Search(props) {
             </header>
             <main>
             <Tabs className="book-tabs"
-                tabLabels={["Genre", "Author", "Title", "New"]}
+                tabLabels={["Members", "Genre", "Author", "Title", "New"]}
                 tabContents={[
+                    <MemberBooks />
+                    , 
                     <SearchForm
                         searchType={'genre'}
                     />, 
