@@ -173,6 +173,9 @@ export function BookInfo(props) {
                         <label htmlFor="READ">{shelves["TOREAD"]}</label>
                     </div>
                 </fieldset>
+                <div className="book-link">
+                    <a href={bookInfo.info_link} target="_blank">More about and where to buy <b>{bookInfo.title}</b></a>
+                </div>
             </div>
             {popup.open && (
                 <PopUp

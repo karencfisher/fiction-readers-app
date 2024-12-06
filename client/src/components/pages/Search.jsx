@@ -3,11 +3,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { SearchForm } from '../forms/SearchForm';
+import { BookAdd } from '../forms/BookAdd';
 import './style.css';
 
 export function Search(props) {
     const [userID, setUserID] = useState(0);
-    const [whichTab, setWhichTab] = useState('genre');
     const navigate = useNavigate();
 
     async function getUserInfo() {
@@ -32,27 +32,24 @@ export function Search(props) {
             <header>
                 <h1 className="page-title">Book Search</h1>
                 <div>
-                    <button onClick={() => navigate(-1)}>Home</button>&nbsp;
+                    <button onClick={() => navigate('/home')}>Home</button>&nbsp;
                     <LogoutButton />
                 </div>
             </header>
             <main>
             <Tabs className="book-tabs"
-            setWhichTab={setWhichTab}
-                tabLabels={["Genre", "Author", "Title"]}
+                tabLabels={["Genre", "Author", "Title", "New"]}
                 tabContents={[
                     <SearchForm
                         searchType={'genre'}
-                        whichTab={whichTab}
                     />, 
                     <SearchForm
                         searchType={'author'}
-                        whichTab={whichTab}
                     />, 
                     <SearchForm
                         searchType={'title'}
-                        whichTab={whichTab}
-                    />
+                    />,
+                    <BookAdd />
                 ]}
             />
             </main>

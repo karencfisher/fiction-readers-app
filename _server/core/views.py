@@ -3,7 +3,9 @@ import os
 import random
 import json
 import traceback
+import requests
 from math import ceil
+from dotenv import load_dotenv
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -11,7 +13,7 @@ from django.conf import settings
 from django.db.utils import IntegrityError
 from django.db.models import F
 from django.contrib.auth.decorators import login_required
-from .vector_search import VectorSearch
+from .vector_search import VectorSearch, add_book
 from .models import *
 
 # Load manifest when server launches
@@ -175,12 +177,15 @@ def book_new(req):
         book_info = json.loads(req.body)
         
         # Genre should be in existing list, but new author and publisher can be added
-        book_info['genre'] = Genre.objects.get(genre=book_info['genre'])
+        genre = book_info['genre']
+        book_info['genre'] = Genre.objects.get(genre=genre)
         book_info['author'], _ = Author.objects.get_or_create(author_name=book_info['author'])
         book_info['publisher'], _ = Publisher.objects.get_or_create(publisher_name=book_info['publisher'])
         new_book = Book.objects.create(**book_info)
         new_book.save()
-        return JsonResponse({'success': 'Book added'}, status=201)
+        
+        add_book(new_book.id, book_info['title'], book_info['synopsis'], genre)
+        return JsonResponse({'success': 'Book added'})
     
     except IntegrityError:
         return JsonResponse({'error': f"This edition of '{book_info['title']}' already exists"}, status=400)
@@ -307,3 +312,27 @@ def reader_log_update(req):
         traceback.print_tb(err.__traceback__)
         print(err)
         return JsonResponse({'error': 'Server error'}, status=500)
+
+@login_required
+def get_google_book_info(req):
+    try:
+        title = req.GET['title']
+        author = req.GET['author']
+        publisher = req.GET['publisher']
+        url = 'https://www.googleapis.com/books/v1/volumes?'
+        load_dotenv()
+        key = os.getenv('GOOGLE_API_KEY')
+        query = {'q': f'intitle:"{title}"inauthor:{author}"inpublisher:"{publisher}"', 'key': key}
+        results = requests.get(url, params=query)
+        books = results.json()
+        if books['totalItems'] == 0:
+            return JsonResponse({'error': 'edition is not found'}, status=404)
+        return JsonResponse(books['items'][0]['volumeInfo'])
+    
+    except KeyError:
+        return JsonResponse({'error': 'missing parameter'}, status=400)
+    except Exception as err:
+        traceback.print_tb(err.__traceback__)
+        print(err)
+        return JsonResponse({'error': 'Server error'}, status=500)
+    

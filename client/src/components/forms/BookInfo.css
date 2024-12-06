@@ -87,6 +87,15 @@
     background-color: rgb(238, 216, 183);
 }
 
+.book-link {
+    margin-top: 15px;
+    color:dodgerblue;
+}
+
+.book-link:hover {
+    color:blueviolet;
+}
+
 #back, #forward {
     cursor: pointer;
 }

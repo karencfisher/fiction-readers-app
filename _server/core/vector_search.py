@@ -1,5 +1,6 @@
 import json
 from sklearn.neighbors import NearestNeighbors
+from sentence_transformers import SentenceTransformer
 from .models import Book, BookIndex, Genre
 
 
@@ -25,4 +26,13 @@ class VectorSearch:
                 .values('id', 'title', 'cover_link')[0]
             similar_books.append(similar_book)
         return similar_books[1:]
-        
+    
+def add_book(book_id, title, synopsis, genre):
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    embedding = model.encode(f"{title} {synopsis}")
+    book = BookIndex(
+        book_id=book_id, 
+        embedding=embedding.tolist(), 
+        genre=Genre.objects.get(genre=genre)
+    )
+    book.save()

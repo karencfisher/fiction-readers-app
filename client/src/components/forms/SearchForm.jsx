@@ -44,19 +44,8 @@ export function SearchForm(props) {
             credentials: "same-origin"
         });
         const response = await result.json();
-        if (result.status !== 200) {
-            setPopup({
-                ...popup, 
-                msg: response.error, 
-                kind: "error",
-                hasCancelButton: false,
-                handler: popUpOkHandler,
-                open: true});
-        }
-        else {
-            setGenres(response.data);
-            setQuery(response.data[0]);
-        }
+        setGenres(response.data);
+        setQuery(response.data[0]);
     }
 
     async function getHints() {
