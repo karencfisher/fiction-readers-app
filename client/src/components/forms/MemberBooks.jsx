@@ -30,6 +30,7 @@ export function MemberBooks() {
     return (
         <div className="book-container">
             <h2>Some books read by members</h2>
+            <hr />
             {books ? (
                 <BookGrid
                     books={books}

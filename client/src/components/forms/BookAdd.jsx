@@ -107,6 +107,8 @@ export function BookAdd(props) {
 
     return (
         <div className="book-container">
+            <h2>Add book to the club database</h2>
+            <hr />
             <p>
                 On this form you can add a book of your own to the club database. You will need
                 to enter at minimum the "Basic Info" for the edition you have, 

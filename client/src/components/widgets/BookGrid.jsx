@@ -34,10 +34,16 @@ export function BookGrid(props) {
                 <></>
             )}
             <div className="book-grid">
-                {books.map((book, i) => (
-                    <img className="book-cover" key={i} src={book.cover_link} alt={book.title} 
-                        id={book.id} onClick={getSelectedBook} />
-                ))}
+                {books.length > 0 ? (
+                    books.map((book, i) => (
+                        <img className="book-cover" key={i} src={book.cover_link} alt={book.title} 
+                            id={book.id} onClick={getSelectedBook} />
+                    ))
+                ) : (
+                    <div className="book-noresults">
+                        No search results
+                    </div>
+                )}
             </div>
         </div>
     )

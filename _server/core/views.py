@@ -131,8 +131,6 @@ def books_search(req):
             collection = vector_search.search_similar(int(query))
         else:
             raise KeyError(f'No such query method: {query}')
-        if not collection:
-            return JsonResponse({'error': f"No data found for '{method}: {query}'"}, status=404)
         
         num_pages = ceil(len(collection) / 12)
         paginator = Paginator(collection, 12)

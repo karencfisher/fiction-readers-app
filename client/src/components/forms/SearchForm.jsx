@@ -18,7 +18,11 @@ export function SearchForm(props) {
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
     async function getData() {
-        if (!query) return;
+        if (!query) {
+            setBooks([]);
+            setCountPages(0);
+            return;
+        }
         const url = `/books/search?method=${searchType}&query=${query}&page=${currentPage}`;
         const result = await fetch(url, {
             credentials: "same-origin"
@@ -53,17 +57,7 @@ export function SearchForm(props) {
             credentials: "same-origin"
         });
         const response = await result.json();
-        if (result.status !== 200) {
-            setPopup({...popup, 
-                      msg: response.error, 
-                      kind: "error",
-                      hasCancelButton: false,
-                      handler: popUpOkHandler,
-                      open: true});
-        }
-        else {
-            setHints(response.data);
-        }
+        setHints(response.data);
     }
 
     function getSelectedBook(e) {
@@ -95,7 +89,7 @@ export function SearchForm(props) {
         <div className="book-container">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
             <form>
-                <fieldset>
+            <fieldset style={searchType !== "genre" ? { height: '100px' } : {}}>
                     <legend>Search {searchType}</legend>
                     {searchType === "genre"? (
                             <div className="field">
