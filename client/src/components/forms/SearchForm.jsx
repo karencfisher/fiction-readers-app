@@ -23,18 +23,20 @@ export function SearchForm(props) {
             setCountPages(0);
             return;
         }
-        const url = `/books/search?method=${searchType}&query=${query}&page=${currentPage}`;
+        const url = `/books/search/?method=${searchType}&query=${query}&page=${currentPage}`;
         const result = await fetch(url, {
             credentials: "same-origin"
         });
         const response = await result.json();
         if (result.status !== 200) {
-            setPopup({...popup, 
-                      msg: response.error, 
-                      kind: "error",
-                      hasCancelButton: false,
-                      handler: popUpOkHandler,
-                      open: true});
+            setPopup({
+                ...popup, 
+                msg: response.error, 
+                kind: "error",
+                hasCancelButton: false,
+                handler: popUpOkHandler,
+                open: true
+            });
         }
         else {
             setBooks(response.data);
@@ -53,7 +55,7 @@ export function SearchForm(props) {
     }
 
     async function getHints() {
-        const result = await fetch(`/completions?field=${searchType}&query=${query}`, {
+        const result = await fetch(`/completions/?field=${searchType}&query=${query}`, {
             credentials: "same-origin"
         });
         const response = await result.json();
@@ -61,29 +63,21 @@ export function SearchForm(props) {
     }
 
     function getSelectedBook(e) {
-		navigate("/book_page", {state: {book_id: e.target.id}})
-	} 
+		navigate("/book_page", {state: {book_id: e.target.id}});
+	}
 
     useEffect(() => {
         if (searchType !== "genre") {
             getHints();
         }
-        setCurrentPage(1)
         getData();
-    }, [query])
+    }, [query, currentPage])
 
     useEffect(() => {
         if (searchType === "genre") {
             getGenres();
         }
-        else if (searchType === "members") {
-            getShelves();
-        }
-    }, [searchType])
-
-    useEffect(() => {
-        getData();
-    }, [currentPage])
+    }, [searchType]);
 
     return (
         <div className="book-container">

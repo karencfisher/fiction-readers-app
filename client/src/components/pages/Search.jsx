@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
 import { SearchForm } from '../forms/SearchForm';
@@ -9,6 +9,7 @@ import './style.css';
 
 export function Search(props) {
     const [userID, setUserID] = useState(0);
+    const [currentTab, setCurrentTab] = useState(0);
     const navigate = useNavigate();
 
     async function getUserInfo() {
@@ -38,23 +39,23 @@ export function Search(props) {
                 </div>
             </header>
             <main>
-            <Tabs className="book-tabs"
-                tabLabels={["Members", "Genre", "Author", "Title", "New"]}
-                tabContents={[
-                    <MemberBooks />
-                    , 
-                    <SearchForm
-                        searchType={'genre'}
-                    />, 
-                    <SearchForm
-                        searchType={'author'}
-                    />, 
-                    <SearchForm
-                        searchType={'title'}
-                    />,
-                    <BookAdd />
-                ]}
-            />
+                <Tabs className="book-tabs"
+                    setCurrentState={setCurrentTab}
+                    tabLabels={["Members", "Genre", "Author", "Title", "New"]}
+                    tabContents={[
+                        <MemberBooks />, 
+                        <SearchForm
+                            searchType={'genre'}
+                        />, 
+                        <SearchForm
+                            searchType={'author'}
+                        />, 
+                        <SearchForm
+                            searchType={'title'}
+                        />,
+                        <BookAdd />
+                    ]}
+                />
             </main>
         </div>
     )

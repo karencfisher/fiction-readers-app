@@ -107,9 +107,11 @@ def completions(req):
         print(err)
         return JsonResponse({'error': 'Server error'}, status=500)
    
+prevQuery = "" # If query changes, force 1st page of query set is returned
 @login_required
 def books_search(req):
     ''' Search books by criteria '''
+    global prevQuery
     try:
         method = req.GET['method']
         query = req.GET['query']
@@ -134,7 +136,11 @@ def books_search(req):
         
         num_pages = ceil(len(collection) / 12)
         paginator = Paginator(collection, 12)
-        page_number = req.GET.get('page')
+        if prevQuery != query:
+            page_number = 1
+            prevQuery = query
+        else:
+            page_number = req.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return JsonResponse({'data': list(page_obj), 
                              'page': page_number, 

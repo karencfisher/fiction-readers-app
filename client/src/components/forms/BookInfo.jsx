@@ -86,20 +86,24 @@ export function BookInfo(props) {
             });
             const response = await result.json();
             if (result.status !== 200) {
-                setPopup({...popup, 
-                          msg: response.error,
-                          kind: "error",
-                          hasCancelButton: false,
-                          handler: popUpOkHandler,
-                          open: true})
+                setPopup({
+                    ...popup, 
+                    msg: response.error,
+                    kind: "error",
+                    hasCancelButton: false,
+                    handler: popUpOkHandler,
+                    open: true
+                })
             }
             else {
-                setPopup({...popup, 
-                          msg: `<b>${bookInfo.title}</b> has been moved to <b>${shelves[status]}</b>`,
-                          kind: "info",
-                          hasCancelButton: false,
-                          handler: popUpOkHandler,
-                          open: true})
+                setPopup({
+                    ...popup, 
+                    msg: `<b>${bookInfo.title}</b> has been moved to <b>${shelves[status]}</b>`,
+                    kind: "info",
+                    hasCancelButton: false,
+                    handler: popUpOkHandler,
+                    open: true
+                })
             }
         }
         if (isChangingShelf.current) {
