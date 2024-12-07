@@ -40,7 +40,6 @@ export function Search(props) {
             </header>
             <main>
                 <Tabs className="book-tabs"
-                    setCurrentState={setCurrentTab}
                     tabLabels={["Members", "Genre", "Author", "Title", "New"]}
                     tabContents={[
                         <MemberBooks />, 
