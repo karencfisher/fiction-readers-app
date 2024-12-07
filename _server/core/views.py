@@ -115,6 +115,7 @@ def books_search(req):
     try:
         method = req.GET['method']
         query = req.GET['query']
+        restore = req.GET.get('restore')
         if method == 'author':
             collection = Book.objects.filter(author__author_name__istartswith=query)\
                 .values('id', 'title', 'cover_link')
@@ -127,16 +128,16 @@ def books_search(req):
         elif method == 'similarity':
             genre = req.GET.get('genre')
             countBooks = Book.objects.filter(genre__genre=genre).count()
-            if countBooks < 37:
+            if countBooks < 25:
                 genre=None
-            vector_search = VectorSearch(n_results=37, genre_name=genre)
+            vector_search = VectorSearch(n_results=25, genre_name=genre)
             collection = vector_search.search_similar(int(query))
         else:
             raise KeyError(f'No such query method: {query}')
         
         num_pages = ceil(len(collection) / 12)
         paginator = Paginator(collection, 12)
-        if prevQuery != query:
+        if prevQuery != query and restore != 'true':
             page_number = 1
             prevQuery = query
         else:

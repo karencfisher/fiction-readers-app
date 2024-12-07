@@ -8,7 +8,8 @@ import './style.css';
 
 export function Landing(props) {
     const [readersBooks, setReadersBooks] = useState([]);
-    const [genreBooks, setGenreBooks] = useState([]); 
+    const [genreBooks, setGenreBooks] = useState([]);
+    const [currentTab, setCurrentTab] = useState(0);
     const navigate = useNavigate();
 
     async function isAuthenticated() {
@@ -68,6 +69,8 @@ export function Landing(props) {
                     </div>
                     <div className="registration">
                         <Tabs
+                            currentTab={currentTab}
+                            setCurrentTab={setCurrentTab}
                             tabLabels={["Login", "Join"]}
                             tabContents={[<LoginForm/>, <RegisterForm/>]}
                         />

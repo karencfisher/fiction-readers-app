@@ -10,46 +10,57 @@ import { Landing } from "./components/pages/Landing.jsx"
 import { BookPage } from './components/pages/BookPage.jsx';
 import { Search } from './components/pages/Search.jsx';
 
-const router = createHashRouter([
-	{
-		path: "/",
-		element: <App />,
-		children: [
-			{
-				path: "/",
-				element: <Landing />
-			},
-			{
-				path: "/home",
-				element: <Home />
-			},
-			{
-				path: "/book_page",
-				element: <BookPage />
-			},
-			{
-				path: "/search",
-				element: <Search />
+const AppWrapper = () => {
+	const [prevState, setPrevState] = React.useState({});
+	const router = createHashRouter([
+		{
+			path: "/",
+			element: <App />,
+			children: [
+				{
+					path: "/",
+					element: <Landing />
+				},
+				{
+					path: "/home",
+					element: <Home />
+				},
+				{
+					path: "/book_page",
+					element: <BookPage />
+				},
+				{
+					path: "/search",
+					element: <Search 
+								prevState={prevState}
+								setPrevState={setPrevState}
+							/>
+				}
+			]
+		},
+	],
+		{
+			future: {
+			v7_fetcherPersist: true,
+			v7_normalizeFormMethod: true,
+			v7_partialHydration: true,
+			v7_relativeSplatPath: true,
+			v7_skipActionErrorRevalidation: true,
+			v7_startTransition: true,
 			}
-		]
-	},
-],
-	{
-		future: {
-		v7_fetcherPersist: true,
-		v7_normalizeFormMethod: true,
-		v7_partialHydration: true,
-		v7_relativeSplatPath: true,
-		v7_skipActionErrorRevalidation: true,
-		v7_startTransition: true,
 		}
-	}
-)
+	)
+	return <RouterProvider router={router} />;
+}
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider 
-    future={{
-      v7_startTransition: true,
-    }}
-    router={router} />
-)
+	<AppWrapper />
+);
+
+// ReactDOM.createRoot(document.getElementById('root')).render(
+//   <RouterProvider 
+//     future={{
+//       v7_startTransition: true,
+//     }}
+//     router={router} />
+// )

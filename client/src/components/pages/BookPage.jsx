@@ -11,6 +11,7 @@ import homeImg from '../images/home.png';
 import './style.css';
 
 export function BookPage({ route }) {
+    const [currentTab, setCurrentTab] = useState(0);
     const [userID, setUserID] = useState(0);
     const [bookInfo, setBookInfo] = useState({})
     const [popup, setPopup] = useState({open: false})
@@ -66,6 +67,7 @@ export function BookPage({ route }) {
             getUserInfo();
             getBookInfo(params.book_id);
         }
+        setCurrentTab(0);
     }, [params]);
 
     useEffect(() => {
@@ -106,6 +108,8 @@ export function BookPage({ route }) {
                     </nav>
                 </fieldset>
                 <Tabs className="book-tabs"
+                    currentTab={currentTab}
+                    setCurrentTab={setCurrentTab}
                     tabLabels={["About", "Reviews", "My Review", "Similar"]}
                     tabContents={[
                         <BookInfo 
