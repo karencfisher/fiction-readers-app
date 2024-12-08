@@ -23,6 +23,7 @@ class Book(models.Model):
                 fields=['title', 'year_published', 'publisher'],
                 name='unique_edition_constraint')
         ]
+        ordering = ['id']
     
     def reviews(self):
         return Review.objects.filter(book=self).values(

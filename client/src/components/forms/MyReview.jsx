@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { PopUp } from '../widgets/PopUp';
+import { BookHeading } from '../widgets/BookHeading';
 import * as cookie from "cookie";
 import './forms.css';
 import './BookInfo.css';
@@ -13,7 +14,8 @@ export function MyReview(props) {
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
     async function getReview(user_id, book_id) {
-        const result = await fetch(`/reviews/${user_id}/${book_id}`, {
+        if (!book_id) return;
+        const result = await fetch(`/reviews/${user_id}/${book_id}/`, {
             credentials: "same-origin"
         });
         const response = await result.json();
@@ -88,17 +90,7 @@ export function MyReview(props) {
         <div className="book-container">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" 
                     rel="stylesheet"/>
-            <div className="book-columns">
-                <div className="book-cover">
-                    <img src={bookInfo.cover_link} alt={bookInfo.title}></img>
-                </div>
-                <div className="book-info">
-                    <h1 className="book-title">{bookInfo.title}</h1>
-                    <h2 className="book-author">{bookInfo.author_name}</h2>
-                    <i>{bookInfo.year_published}<br />
-                    {bookInfo.publisher_name}</i>
-                </div>
-            </div>
+            <BookHeading bookInfo={bookInfo} />
             <hr />
             <form onSubmit={updateReview} method="post">
                 

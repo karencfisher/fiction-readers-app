@@ -31,7 +31,7 @@ export function BookAdd(props) {
     }, [])
 
     async function getBoookInfo() {
-        const url = `/books/google?title=${title}&author=${author}&publisher=${publisher}`
+        const url = `/books/google/?title=${title}&author=${author}&publisher=${publisher}`
         const result = await fetch(url, {
             credentials: "same-origin"
         });

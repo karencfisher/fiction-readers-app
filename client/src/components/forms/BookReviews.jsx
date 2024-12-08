@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { PopUp } from '../widgets/PopUp';
+import { BookHeading } from '../widgets/BookHeading';
 import './BookInfo.css';
+import star from '../images/star1.png';
 
 export function BookReviews(props) {
     const [reviewIndex, setReviewIndex] = useState(0);
@@ -12,7 +14,6 @@ export function BookReviews(props) {
             setReviewIndex(reviewIndex - 1);
         else if (e.target.id === "forward" && reviewIndex < reviewCount) 
             setReviewIndex(reviewIndex + 1);
-        console.log(reviewIndex, reviewCount);
     }
 
     useEffect(() => {
@@ -25,17 +26,7 @@ export function BookReviews(props) {
         <div className="book-container">
             <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" 
                     rel="stylesheet"/>
-            <div className="book-columns">
-                <div className="book-cover">
-                    <img src={bookInfo.cover_link} alt={bookInfo.title}></img>
-                </div>
-                <div className="book-info">
-                    <h1 className="book-title">{bookInfo.title}</h1>
-                    <h2 className="book-author">{bookInfo.author_name}</h2>
-                    <i>{bookInfo.year_published}<br />
-                    {bookInfo.publisher_name}</i>
-                </div>
-            </div>
+            <BookHeading bookInfo={bookInfo} />
             <hr />
             <div>
                 <div className="review-nav">
@@ -59,8 +50,11 @@ export function BookReviews(props) {
                 </div>
                     {bookInfo.reviews && bookInfo.reviews.length > 0 ?
                         <div className="review-container">
-                            <div className="review-rating">
-                                Rating: {bookInfo.reviews[reviewIndex].rating}
+                            <div className="book-rating">
+                                {Array.from(
+                                    {length: parseInt(bookInfo.reviews[reviewIndex].rating)},
+                                    (_, i) => <img key={i} src={star} alt="star" />
+                                )}
                             </div>
                             <div className="review-user">
                                 <i>Review submitted by {bookInfo.reviews[reviewIndex].user__username}</i>

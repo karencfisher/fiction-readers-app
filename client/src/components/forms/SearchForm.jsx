@@ -21,6 +21,8 @@ export function SearchForm(props) {
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
     async function getData() {
+        if (!query && !selectGenre) return;
+
         const q = searchType === "genre" ? selectGenre: query;
         const url = `/books/search/?method=${searchType}&query=${q}&page=${currentPage}&restore=${restore.current}`;
         const result = await fetch(url, {
@@ -81,11 +83,11 @@ export function SearchForm(props) {
             }
 
             if ("page" in prevState) {
-                setCurrentPage(prevState.page);
-                setQuery(prevState.query);
-                setSelectGenre(prevState.genre);
-                setCurrentTab(prevState.tab);
                 restore.current = true;
+                setCurrentPage(prevState.page);
+                setSelectGenre(prevState.genre);
+                setQuery(prevState.query);
+                setCurrentTab(prevState.tab);
                 setPrevState({});
             }
         };

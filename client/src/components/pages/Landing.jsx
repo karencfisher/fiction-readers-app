@@ -13,7 +13,7 @@ export function Landing(props) {
     const navigate = useNavigate();
 
     async function isAuthenticated() {
-        const result = await fetch('/registration/whoami', {
+        const result = await fetch('/registration/whoami/', {
 			credentials: "same-origin"
 		});
         const answer = await result.json();
@@ -31,10 +31,10 @@ export function Landing(props) {
     useEffect(() => {
         isAuthenticated();
         const fetchBooks = async () => {
-            const logBooks = await getBooks("reader_logs");
+            const logBooks = await getBooks("reader_logs/");
             setReadersBooks(logBooks);
 
-            const genreBooks = await getBooks("genres");
+            const genreBooks = await getBooks("genres/");
             setGenreBooks(genreBooks);
         };
         fetchBooks()

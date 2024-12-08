@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PopUp } from "../widgets/PopUp";
 import { BookGrid } from "../widgets/BookGrid";
+import { BookHeading } from "../widgets/BookHeading";
 import '../forms/BookInfo.css'; 
+import star from '../images/star1.png';
 
 
 export function BookSimilar(props) {
@@ -16,7 +18,7 @@ export function BookSimilar(props) {
 
     async function getSimilar() {
         const result = await fetch(
-            `/books/search?method=similarity&query=${bookInfo.id}&genre=${bookInfo.genre_name}&page=${currentPage}`, {
+            `/books/search/?method=similarity&query=${bookInfo.id}&genre=${bookInfo.genre_name}&page=${currentPage}`, {
             credentials: "same-origin"
         });
         const response = await result.json();
@@ -55,17 +57,7 @@ export function BookSimilar(props) {
 
     return (
         <div className="book-container">
-            <div className="book-columns">
-                <div className="book-cover">
-                    <img src={bookInfo.cover_link} alt={bookInfo.title}></img>
-                </div>
-                <div className="book-info">
-                    <h1 className="book-title">{bookInfo.title}</h1>
-                    <h2 className="book-author">{bookInfo.author_name}</h2>
-                    <i>{bookInfo.year_published}<br />
-                    {bookInfo.publisher_name}</i>
-                </div>
-            </div>
+            <BookHeading bookInfo={bookInfo} />
             <hr />
             <BookGrid 
                 books={books}

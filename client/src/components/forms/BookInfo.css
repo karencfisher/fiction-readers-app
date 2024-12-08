@@ -104,6 +104,15 @@
     color: green;
 }
 
+.book-rating {
+    margin-top: 10px;
+    font-size: .8rem;
+}
+
+.book-rating img {
+    height: 15px;
+}
+
 @media screen and (min-width: 900px) {
     .book-synopsis {
         font-size: 1rem;

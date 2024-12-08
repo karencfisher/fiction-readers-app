@@ -118,12 +118,15 @@ def books_search(req):
         restore = req.GET.get('restore')
         if method == 'author':
             collection = Book.objects.filter(author__author_name__istartswith=query)\
+                .order_by('id')\
                 .values('id', 'title', 'cover_link')
         elif method == 'genre':
             collection = Book.objects.filter(genre__genre=query)\
+                .order_by('id')\
                 .values('id', 'title', 'cover_link')
         elif method == 'title':
             collection = Book.objects.filter(title__istartswith=query)\
+                .order_by('id')\
                 .values('id', 'title', 'cover_link')
         elif method == 'similarity':
             genre = req.GET.get('genre')
@@ -332,6 +335,10 @@ def get_google_book_info(req):
         title = req.GET['title']
         author = req.GET['author']
         publisher = req.GET['publisher']
+        
+        if len(title) == 0 or len(author) == 0 or len(publisher) == 0:
+            return JsonResponse({'error': 'missing parameter'}, status=400)
+        
         url = 'https://www.googleapis.com/books/v1/volumes?'
         load_dotenv()
         key = os.getenv('GOOGLE_API_KEY')

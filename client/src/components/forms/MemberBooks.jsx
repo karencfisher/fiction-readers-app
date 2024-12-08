@@ -10,7 +10,7 @@ export function MemberBooks() {
     const navigate = useNavigate();
 
     async function getShelves() {
-        const result = await fetch(`/books/reader_logs?page=${currentPage}`, {
+        const result = await fetch(`/books/reader_logs/?page=${currentPage}`, {
             credentials: "same-origin"
         });
         const response = await result.json();

@@ -15,7 +15,7 @@ export function Home() {
 	const navigate = useNavigate();
 
 	async function getUserInfo() {
-		const result = await fetch('/registration/whoami', {
+		const result = await fetch('/registration/whoami/', {
 			credentials: "same-origin"
 		});
 		const answer = await result.json();
