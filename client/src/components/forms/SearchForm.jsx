@@ -81,7 +81,6 @@ export function SearchForm(props) {
             }
 
             if ("page" in prevState) {
-                console.log(`Restoring ${JSON.stringify(prevState)}`)
                 setCurrentPage(prevState.page);
                 setQuery(prevState.query);
                 setSelectGenre(prevState.genre);
