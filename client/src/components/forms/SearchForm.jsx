@@ -17,7 +17,6 @@ export function SearchForm(props) {
     const restore = useRef(false);
     const prevPage = useRef(currentPage);
     const {searchType, prevState, setPrevState, currentTab, setCurrentTab} = props;
-    const prevTab = useRef(currentTab);
     const navigate = useNavigate();
     const popUpOkHandler = () => setPopup({...popup, open: false});
 
