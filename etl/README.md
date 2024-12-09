@@ -45,7 +45,8 @@ These files exactly mirror the Django models.
 
 1) Navigate to the _server/ subdirectory
 2) Perform migrations if needed, creating the DB
-3) Run ```python manage.py load_db```
+3) Run ```python manage.py load_db``` to load sample data to the DB
+4) Run ```python manage.py index_books``` build index of database for similarity searches
 
 ![screenshot](load_DB.png)
    
