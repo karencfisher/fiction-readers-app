@@ -12,6 +12,7 @@ import { Search } from './components/pages/Search.jsx';
 
 const AppWrapper = () => {
 	const [prevState, setPrevState] = React.useState({});
+	
 	const router = createHashRouter([
 		{
 			path: "/",
@@ -57,10 +58,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 	<AppWrapper />
 );
 
-// ReactDOM.createRoot(document.getElementById('root')).render(
-//   <RouterProvider 
-//     future={{
-//       v7_startTransition: true,
-//     }}
-//     router={router} />
-// )

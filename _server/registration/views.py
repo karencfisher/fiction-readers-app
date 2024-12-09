@@ -1,7 +1,7 @@
 import traceback
 import json
 import re
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -65,6 +65,9 @@ def whoami(req: HttpRequest):
         traceback.print_tb(err.__traceback__)
         print(err)
         return JsonResponse({'error': 'Server error'}, status=500)
+    
+def denied(req):
+    return render(req, 'landing/denied.html', status=401)
 
 @login_required
 def logout_view(req: HttpRequest):

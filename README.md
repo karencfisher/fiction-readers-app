@@ -2,6 +2,9 @@
 
 This is the beginning or MVP of a fictional book club -- an opportunity fo users to find and share books they enjoy, read and write reviews of books, and so forth. Functionality *not* yet built includes more social aspects, such as profiles, ability to follow and be followed by other users, and messaging or forums. Currently all reviews are public (which is, all authenticated users).
 
+The aim is to create a clean, intuitive user experience, allowing the reader to wander among books in an 
+associative manner. For example, one can search for similar books using a KNN model, using embeddings of the titles and synopses of books created with a version of BERT provided by HuggingFace. 
+
 ## Database
 
 The initial database contains nearly 500 books, and somewhat over than 100 reviews written mostly by 3 pseudnymous users, obtained from a much larger dataset found on Kaggle (which contains 212000 book descriptions and 3 million reviews from Goodreads). The Kaggle dataset may be found here:
@@ -44,3 +47,7 @@ erase any previous data.)
 1. In the `client` directory run `npm run dev`
 2. In the `_server` directory (with your poetry env activated) run `python manage.py runserver`
 3. Visit your application at `http://localhost:8000`
+
+**Note**: On a new installation, the first use of the form allowing the user to add a book
+to the database will take significantly longer time, as the SentenceTransformer model used to create 
+embeddings will need to be downloaded from HuggingFace. This should occur automatically.
