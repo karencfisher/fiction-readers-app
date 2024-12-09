@@ -37,7 +37,7 @@ export function Search(props) {
             <header>
                 <h1 className="page-title">Book Search</h1>
                 <div>
-                    <button onClick={() => navigate('/home')}>Home</button>&nbsp;
+                    <button onClick={() => navigate(-1)}>Back</button>&nbsp;
                     <LogoutButton />
                 </div>
             </header>

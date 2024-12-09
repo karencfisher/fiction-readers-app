@@ -3,6 +3,7 @@ import * as cookie from "cookie";
 import { useNavigate } from 'react-router-dom';
 import { BookShelf } from '../widgets/BookShelf';
 import { LogoutButton } from '../widgets/LogoutButton';
+import { SearchButton } from '../widgets/SearchButton';
 import './style.css';
 
 export function Home() {
@@ -110,7 +111,7 @@ export function Home() {
 			<header>
 				<h1 className="page-title">Your Bookshelves</h1>
 				<div>
-					<button onClick={onSearchClick}>Search</button>&nbsp;
+					<SearchButton />&nbsp;
 					<LogoutButton />
 				</div>
 			</header>

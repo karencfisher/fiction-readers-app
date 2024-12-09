@@ -40,7 +40,7 @@ def books_reader_logs(req):
         page = req.GET.get('page')
         results = Book.objects.filter(reader_log__isnull=False)\
             .distinct().values('id', 'title', 'cover_link')
-        random_books = random.sample(list(results), 20)
+        random_books = random.sample(list(results), 24)
         if page is not None:
             num_pages = ceil(len(random_books) / 12)
             paginator = Paginator(random_books, 12)
@@ -193,6 +193,8 @@ def book_new(req):
         book_info = json.loads(req.body)
         
         # Genre should be in existing list, but new author and publisher can be added
+        shelf = book_info['shelf']
+        del book_info['shelf']
         genre = book_info['genre']
         book_info['genre'] = Genre.objects.get(genre=genre)
         book_info['author'], _ = Author.objects.get_or_create(author_name=book_info['author'])
@@ -200,7 +202,17 @@ def book_new(req):
         new_book = Book.objects.create(**book_info)
         new_book.save()
         
+        # Add mebedding to book index
         add_book(new_book.id, book_info['title'], book_info['synopsis'], genre)
+        
+        # add book to user's bookshelf
+        new_log = ReaderLog.objects.create(
+             user=User.objects.get(id=req.user.id),
+             book=Book.objects.get(id=new_book.id),
+             status=shelf                                                
+        )
+        new_log.save()
+        
         return JsonResponse({'success': 'Book added'})
     
     except IntegrityError:
@@ -245,6 +257,7 @@ def review_update(req):
         if (review_info['user'] != req.user.id):
             return JsonResponse({'error': 'Denied'}, status=403)
         review_info['user'] = User.objects.get(id=review_info['user'])
+        book_id = review_info['book']
         review_info['book'] = Book.objects.get(id=review_info['book'])
         review_info['rating'] = int(review_info['rating'])
         new_review, created = Review.objects.update_or_create(
@@ -253,6 +266,14 @@ def review_update(req):
              defaults=review_info                                                 
         )
         new_review.save()
+        
+        # update average review
+        reviews = Review.objects.filter(book=book_id).values('rating')
+        avg_rating = ceil(sum([review['rating'] for review in reviews]) / len(reviews))
+        book_obj = Book.objects.get(pk=book_id)
+        book_obj.average_rating = avg_rating
+        book_obj.save()
+        
         action = 'Review created' if created else 'Review updated'
         return JsonResponse({'success': action})
     

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Tabs } from '../widgets/Tabs';
 import { LogoutButton } from '../widgets/LogoutButton';
+import { SearchButton } from '../widgets/SearchButton';
 import { BookInfo } from '../forms/BookInfo';
 import { BookReviews } from '../forms/BookReviews';
 import { BookSimilar } from '../forms/BookSimilar';
@@ -91,7 +92,8 @@ export function BookPage({ route }) {
             <header>
                 <h1 className="page-title">Book Details</h1>
                 <div>
-                    &nbsp;<LogoutButton />
+                    <SearchButton />&nbsp;
+                    <LogoutButton />
                 </div>
             </header>
             <main>

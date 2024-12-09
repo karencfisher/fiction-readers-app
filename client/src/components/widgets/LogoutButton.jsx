@@ -9,7 +9,6 @@ export function LogoutButton() {
 		});
 
 		if (res.ok) {
-			// navigate away from the single page app!
 			navigate('/');
 		}
 	}

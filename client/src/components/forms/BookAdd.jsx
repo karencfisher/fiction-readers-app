@@ -4,6 +4,7 @@ import * as cookie from "cookie";
 import './forms.css';
 
 export function BookAdd(props) {
+    const [shelf, setShelf] = useState("TOREAD");
     const [genres, setGenres] = useState([]);
     const [genre, setGenre] = useState("");
     const [title, setTitle] = useState("");
@@ -71,7 +72,8 @@ export function BookAdd(props) {
                 synopsis: synopsis,
                 info_link: infoLink,
                 cover_link: coverLink,
-                year_published: yearPublished
+                year_published: yearPublished,
+                shelf: shelf
             }),
             headers: {
                 "Content-Type": "application/json",
@@ -119,15 +121,25 @@ export function BookAdd(props) {
             <form>
                 <fieldset>
                     <legend>Basic Info</legend>
+                    <div className = "field">
+                        <label htmlFor="shelf">Bookshelf</label>
+                        <select name="shelf" id="shelf" onChange={(e) => setShelf(e.target.value)}
+                                value={shelf}>
+                            <option value={'READ'}>Books I have read</option>
+                            <option value={'READING'}>Books I am reading</option>
+                            <option value={'TOREAD'}>Books I plan to read</option>
+                        </select>
+                    </div>
                     <div className="field">
-                                <label htmlFor="genres">Genre</label>
-                                <select name="genres" id="genres"
-                                        onChange={(e) => setGenre(e.target.value)}>
-                                    {genres.map((genre, i) => (
-                                        <option key={i} value={genre}>{genre}</option>
-                                    ))}
-                                </select>
-                            </div>
+                        <label htmlFor="genres">Genre</label>
+                        <select name="genres" id="genres"
+                                onChange={(e) => setGenre(e.target.value)}>
+                            {genres.map((genre, i) => (
+                                <option key={i} value={genre}>{genre}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <hr />
                     <div className="field">
                         <label htmlFor="title">Title</label>
                         <input type="text" name="title" id="title" required value={title}
