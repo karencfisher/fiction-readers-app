@@ -144,6 +144,9 @@ export function Home() {
 					onSearchClick={onSearchClick}
 					shelfId="TOREAD"
 				/>
+				<footer>
+					Click on a cover to learn about the book. Drag and drop to rearrange shelving.
+				</footer>
 			</main>
 		</div>
   	)
