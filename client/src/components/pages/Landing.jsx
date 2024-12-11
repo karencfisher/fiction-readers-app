@@ -4,12 +4,15 @@ import { BookShelf } from '../widgets/BookShelf';
 import { Tabs } from '../widgets/Tabs';
 import { LoginForm } from '../forms/LoginForm';
 import { RegisterForm } from '../forms/RegisterForm';
+import { PopUp } from '../widgets/PopUp';
 import './style.css';
 
 export function Landing(props) {
     const [readersBooks, setReadersBooks] = useState([]);
     const [genreBooks, setGenreBooks] = useState([]);
     const [currentTab, setCurrentTab] = useState(0);
+    const [popup, setPopup] = useState({open: false});
+    const popUpOkHandler = () => setPopup({...popup, open: false});
     const navigate = useNavigate();
 
     async function isAuthenticated() {
@@ -32,6 +35,15 @@ export function Landing(props) {
         isAuthenticated();
         const fetchBooks = async () => {
             const logBooks = await getBooks("reader_logs/");
+            if (logBooks.length === 0) {
+                setPopup({...popup, 
+                    kind: "error",
+                    hasCancelButton: false,
+                    handler: popUpOkHandler,
+                    msg: "Database not loaded! Check README for instructions.", 
+                    open: true
+                });
+            }
             setReadersBooks(logBooks);
 
             const genreBooks = await getBooks("genres/");
@@ -85,6 +97,15 @@ export function Landing(props) {
                     />
                 ))}
             </main>
+            {popup.open && (
+                <PopUp
+                    message={popup.msg}
+                    callback={popup.handler}
+                    kind={popup.kind}
+                    modal={true}
+                    hasCancelButton={popup.hasCancelButton}
+                />
+            )}
         </div>
     )
 }

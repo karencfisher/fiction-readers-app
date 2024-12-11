@@ -40,7 +40,9 @@ def books_reader_logs(req):
         page = req.GET.get('page')
         results = Book.objects.filter(reader_log__isnull=False)\
             .distinct().values('id', 'title', 'cover_link')
-        random_books = random.sample(list(results), 24)
+        random_books = list(results)
+        if len(random_books) > 24:
+            random_books = random.sample(random_books, 24)
         if page is not None:
             num_pages = ceil(len(random_books) / 12)
             paginator = Paginator(random_books, 12)
@@ -59,7 +61,9 @@ def books_genre_samples(req):
     ''' Get books from two selected genres (for landing page) '''
     try:
         genres = Genre.objects.all().values('genre')
-        selected_genres = random.sample(list(genres), 2)
+        selected_genres = list(genres)
+        if len(selected_genres) > 0:
+            selected_genres = random.sample(list(selected_genres), 2)
         shelves = []
         for genre in selected_genres:
             collection = Book.objects.filter(genre__genre=genre['genre'])\
@@ -366,6 +370,8 @@ def get_google_book_info(req):
         query = {'q': f'intitle:"{title}"inauthor:{author}"inpublisher:"{publisher}"', 'key': key}
         results = requests.get(url, params=query)
         books = results.json()
+        if results.status_code != 200:
+            return JsonResponse({'error': books['error']['message']}, status=books['error']['code'])
         if books['totalItems'] == 0:
             return JsonResponse({'error': 'edition is not found'}, status=404)
         return JsonResponse(books['items'][0]['volumeInfo'])

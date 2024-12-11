@@ -15,6 +15,8 @@ export function BookShelf(props) {
         }),
     });
 
+    console.log(books);
+
     return (
         <div className="shelf" data-kind={kind}>
             <div className="shelf-title">
@@ -26,7 +28,11 @@ export function BookShelf(props) {
                 {books.length === 0? (
                     <div className="placeholder">
                         Nothing on your shelf yet!&nbsp;
-                        <span className="add-link" onClick={onSearchClick}>Add a book now</span>
+                        {onSearchClick ? (
+                            <span className="add-link" onClick={onSearchClick}>Add a book now</span>
+                        ) : (
+                            <></>
+                        )}
                     </div>
                 ) : (
                     books.map((book, i) => (
