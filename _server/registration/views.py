@@ -6,10 +6,18 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.http import JsonResponse
+from django.middleware.csrf import get_token
 
 # Create your views here.
+def get_csrf(request):
+    """
+    Get CSRF token to set the cookie for the frontend
+    """
+    csrf_token = get_token(request)
+    return HttpResponse("CSRF cookie set")
+
 def sign_up(req: HttpRequest):
     try:
         body = json.loads(req.body)
