@@ -39,8 +39,7 @@ The other API key is for Google, which is necessary for the Google Books API sea
 A sample DB is included in the repository. However, to install it from scratch one would do the following additional steps.
 
 6. In the `_server` directory, run the migrations `python manage.py migrate`
-7. Run `python manage.py load_db` to populate the data with the sample data. (Doing this will
-erase any previous data.)
+7. Run `python manage.py load_db` to populate the data with the sample data. (*Not doing this step would result in an empty database with limited functionality.*)
 8. Run `python manage.py index_books` to build the embedding table for similarity searches.
 
 ## Running the appliction
