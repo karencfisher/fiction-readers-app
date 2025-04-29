@@ -5,6 +5,15 @@ This is the beginning or MVP of a fictional book club -- an opportunity fo users
 The aim is to create a clean, intuitive user experience, allowing the reader to wander among books in an 
 associative manner. For example, one can search for similar books using a KNN model, using embeddings of the titles and synopses of books created with a version of BERT provided by HuggingFace. 
 
+## Screenshots
+
+<tr>
+    <td><img src="screenshots/Screenshot1.png" alt="Screenshot 1" width="200"/></td>
+    <td><img src="screenshots/Screenshot2.png" alt="Screenshot 2" width="200"/></td>
+    <td><img src="screenshots/Screenshot3.png" alt="Screenshot 3" width="200"/></td>
+    <td><img src="screenshots/Screenshot4.png" alt="Screenshot 3" width="200"/></td>
+  </tr>
+
 ## Database
 
 The initial database contains nearly 500 books, and somewhat over than 100 reviews written mostly by 3 pseudnymous users, obtained from a much larger dataset found on Kaggle (which contains 212000 book descriptions and 3 million reviews from Goodreads). The Kaggle dataset may be found here:
