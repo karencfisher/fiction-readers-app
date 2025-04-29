@@ -7,12 +7,14 @@ associative manner. For example, one can search for similar books using a KNN mo
 
 ## Screenshots
 
-<tr>
-    <td><img src="screenshots/screenshot1.png" alt="Screenshot 1" width="200"/></td>
-    <td><img src="screenshots/screenshot2.png" alt="Screenshot 2" width="200"/></td>
-    <td><img src="screenshots/screenshot3.png" alt="Screenshot 3" width="200"/></td>
-    <td><img src="screenshots/screenshot4.png" alt="Screenshot 3" width="200"/></td>
-  </tr>
+<table>
+    <tr>
+        <td><img src="screenshots/screenshot1.png" alt="Screenshot 1" width="200"/></td>
+        <td><img src="screenshots/screenshot2.png" alt="Screenshot 2" width="200"/></td>
+        <td><img src="screenshots/screenshot3.png" alt="Screenshot 3" width="200"/></td>
+        <td><img src="screenshots/screenshot4.png" alt="Screenshot 3" width="200"/></td>
+    </tr>
+</table>
 
 ## Database
 
